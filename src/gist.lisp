@@ -2,9 +2,29 @@
 (defpackage cl-gists.gist
   (:use :cl
         :annot.doc
-        :annot.class
         :cl-gists.user
         :cl-gists.file)
+  (:export :cl-gists.gist
+           :gist
+           :gist-url
+           :gist-forks-url
+           :gist-commits-url
+           :gist-id
+           :gist-description
+           :gist-public
+           :gist-owner
+           :gist-user
+           :gist-files
+           :gist-comments
+           :gist-comments-url
+           :gist-html-url
+           :gist-git-pull-url
+           :gist-git-push-url
+           :gist-created-at
+           :gist-updated-at
+           :make-gist
+           :make-gist-from-json
+           :make-gists-from-json)
   (:import-from :alexandria
                 :remove-from-plist)
   (:import-from :local-time
@@ -18,7 +38,6 @@
 
 @doc
 "Structure of Gist"
-@export-structure
 (defstruct (gist (:constructor %make-gist))
   (url nil :type (or null string))
   (forks-url nil :type (or null string))

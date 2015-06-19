@@ -3,7 +3,8 @@
   (:use :cl
         :prove
         :cl-gists-test.init
-        :cl-gists))
+        :cl-gists
+        :cl-gists.gist))
 (in-package :cl-gists-test.gist)
 
 (plan nil)

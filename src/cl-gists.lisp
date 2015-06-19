@@ -18,8 +18,7 @@
                 :user-events-url
                 :user-received-events-url
                 :user-type
-                :user-site-admin
-                :make-user)
+                :user-site-admin)
   (:import-from :cl-gists.file
                 :file
                 :file-name
@@ -27,8 +26,7 @@
                 :file-raw-url
                 :file-type
                 :file-truncated
-                :file-language
-                :make-file)
+                :file-language)
   (:import-from :cl-gists.gist
                 :gist
                 :gist-url
@@ -46,10 +44,7 @@
                 :gist-git-pull-url
                 :gist-git-push-url
                 :gist-created-at
-                :gist-updated-at
-                :make-gist
-                :make-gist-from-json
-                :make-gists-from-json)
+                :gist-updated-at)
   (:export ;; user
            :user
            :user-login
@@ -68,7 +63,6 @@
            :user-received-events-url
            :user-type
            :user-site-admin
-           :make-user
 
            ;; file
            :file
@@ -78,7 +72,6 @@
            :file-type
            :file-truncated
            :file-language
-           :make-file
 
            ;; gist
            :gist
@@ -97,8 +90,5 @@
            :gist-git-pull-url
            :gist-git-push-url
            :gist-created-at
-           :gist-updated-at
-           :make-gist
-           :make-gist-from-json
-           :make-gists-from-json))
+           :gist-updated-at))
 (in-package :cl-gists)
