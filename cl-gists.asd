@@ -22,14 +22,20 @@
                :cl-syntax-annot
                :alexandria
                :local-time
+               :quri
                :dexador
+               :babel
                :jonathan)
   :components ((:module "src"
                 :serial t
                 :components
-                ((:file "user")
+                ((:file "util")
+                 (:file "user")
                  (:file "file")
+                 (:file "fork")
+                 (:file "history")
                  (:file "gist")
+                 (:file "api")
                  (:file "cl-gists"))))
   :description "Gists API Wrapper for Common Lisp."
   :long-description

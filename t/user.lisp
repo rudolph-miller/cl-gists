@@ -3,8 +3,9 @@
   (:use :cl
         :prove
         :cl-gists-test.init
-        :cl-gists
-        :cl-gists.user))
+        :cl-gists)
+  (:import-from :cl-gists.user
+                :make-user))
 (in-package :cl-gists-test.user)
 
 (plan nil)

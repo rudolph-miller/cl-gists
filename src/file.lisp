@@ -1,7 +1,10 @@
 (in-package :cl-user)
 (defpackage cl-gists.file
   (:use :cl
-        :annot.doc)
+        :annot.doc
+        :cl-gists.util)
+  (:import-from :alexandria
+                :remove-from-plist)
   (:export :cl-gists.file
            :file
            :file-name
@@ -10,7 +13,9 @@
            :file-type
            :file-truncated
            :file-language
-           :make-file))
+           :file-content
+           :make-file
+           :make-files))
 (in-package :cl-gists.file)
 
 (syntax:use-syntax :annot)
@@ -23,4 +28,12 @@
   (raw-url nil :type (or null string))
   (type nil :type (or null string))
   (truncated nil :type boolean)
-  (language nil :type (or null string)))
+  (language nil :type (or null string))
+  (content nil :type (or null string)))
+
+(defun make-files (files)
+  (loop for (name plist) on files by #'cddr
+        for formatted-plist = (format-plist plist)
+        for filename = (or (getf formatted-plist :filename) (symbol-name name))
+        collecting (apply #'make-file (append (list :name filename)
+                                              (remove-from-plist formatted-plist :filename)))))

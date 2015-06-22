@@ -2,11 +2,15 @@
 (defpackage cl-gists-test.init
   (:use :cl
         :cl-gists
-        :prove)
+        :prove
+        :local-time)
   (:export :test-all-slots-bound-and-not-nil
            :test-user
            :test-file
-           :test-gist))
+           :test-fork
+           :test-history
+           :test-gist
+           :mytoday))
 (in-package :cl-gists-test.init)
 
 (defmacro test-all-slots-bound-and-not-nil (obj &key excludes)
@@ -27,8 +31,28 @@
 (defmacro test-file (file)
   `(test-all-slots-bound-and-not-nil ,file :excludes (list 'cl-gists.file::truncated)))
 
-(defmacro test-gist (gist)
+(defmacro test-fork (fork)
   `(progn
-     (test-all-slots-bound-and-not-nil ,gist :excludes (list 'cl-gists.gist::user))
-     (test-user (gist-user ,gist))
-     (test-file (car (gist-files ,gist)))))
+     (subtest "slots of fork"
+       (test-all-slots-bound-and-not-nil ,fork))
+     (subtest "slots of user"
+       (test-user (fork-user ,fork)))))
+
+(defmacro test-history (history)
+  `(progn
+     (subtest "slots of history"
+       (test-all-slots-bound-and-not-nil ,history))
+     (subtest "slots of user"
+       (test-user (history-user ,history)))))
+
+(defmacro test-gist (gist &key excludes)
+  `(progn
+     (subtest "slots of gist"
+       (test-all-slots-bound-and-not-nil ,gist :excludes (append (list 'cl-gists.gist::user) ,excludes)))
+     (subtest "slots of owner"
+       (test-user (gist-owner ,gist)))
+     (subtest "slots of file"
+       (test-file (car (gist-files ,gist))))))
+
+(defun mytoday ()
+  (encode-timestamp 0 0 0 12 31 12 2014 :timezone +utc-zone+))

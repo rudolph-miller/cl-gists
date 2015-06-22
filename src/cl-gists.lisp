@@ -26,7 +26,24 @@
                 :file-raw-url
                 :file-type
                 :file-truncated
-                :file-language)
+                :file-language
+                :file-content)
+  (:import-from :cl-gists.fork
+                :fork
+                :fork-user
+                :fork-url
+                :fork-id
+                :fork-created-at
+                :fork-updated-at)
+  (:import-from :cl-gists.history
+                :history
+                :history-url
+                :history-version
+                :history-user
+                :history-deletions
+                :history-additions
+                :history-total
+                :history-committed-at)
   (:import-from :cl-gists.gist
                 :gist
                 :gist-url
@@ -45,6 +62,9 @@
                 :gist-git-push-url
                 :gist-created-at
                 :gist-updated-at)
+  (:import-from :cl-gists.api
+                :list-gists
+                :get-gist)
   (:export ;; user
            :user
            :user-login
@@ -72,6 +92,25 @@
            :file-type
            :file-truncated
            :file-language
+           :file-content
+
+           ;; fork
+           :fork
+           :fork-user
+           :fork-url
+           :fork-id
+           :fork-created-at
+           :fork-updated-at
+
+           ;; history
+           :history
+           :history-url
+           :history-version
+           :history-user
+           :history-deletions
+           :history-additions
+           :history-total
+           :history-committed-at
 
            ;; gist
            :gist
@@ -90,5 +129,9 @@
            :gist-git-pull-url
            :gist-git-push-url
            :gist-created-at
-           :gist-updated-at))
+           :gist-updated-at
+
+           ;; api
+           :list-gists
+           :get-gist))
 (in-package :cl-gists)

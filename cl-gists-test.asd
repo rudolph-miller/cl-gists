@@ -18,9 +18,13 @@
   :components ((:module "t"
                 :components
                 ((:file "init")
+                 (:test-file "util")
                  (:test-file "user")
                  (:test-file "file")
+                 (:test-file "fork")
+                 (:test-file "history")
                  (:test-file "gist")
+                 (:test-file "api")
                  (:test-file "cl-gists"))))
   :description "Test system for cl-gists"
 

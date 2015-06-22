@@ -3,8 +3,10 @@
   (:use :cl
         :prove
         :cl-gists-test.init
-        :cl-gists
-        :cl-gists.file))
+        :cl-gists)
+  (:import-from :cl-gists.file
+                :make-file
+                :make-files))
 (in-package :cl-gists-test.file)
 
 (plan nil)
@@ -15,11 +17,40 @@
                          :raw-url "https://gist.githubusercontent.com/anonymous/abcde/sample.lisp"
                          :language "Common Lisp"
                          :type "text/plain"
-                         :truncated nil)))
+                         :truncated nil
+                         :content "Sample text.")))
     (is-type file
              'file
              "can make-file.")
 
     (test-file file)))
+
+(subtest "make-files"
+  (subtest "without filename"
+    (let ((file (car (make-files '(:|sample.lisp| (:size 500
+                                                   :filename "sample.lisp"
+                                                   :raw-url "https://gist.githubusercontent.com/anonymous/abcde/sample.lisp"
+                                                   :language "Common Lisp"
+                                                   :type "text/plain"
+                                                   :truncated nil
+                                                   :content "Sample text."))))))
+      (is-type file
+               'file
+               "can make-files.")
+
+      (test-file file)))
+
+  (subtest "with filename"
+    (let ((file (car (make-files '(:|sample.lisp| (:size 500
+                                                   :raw-url "https://gist.githubusercontent.com/anonymous/abcde/sample.lisp"
+                                                   :language "Common Lisp"
+                                                   :type "text/plain"
+                                                   :truncated nil
+                                                   :content "Sample text."))))))
+      (is-type file
+               'file
+               "can make-files.")
+
+      (test-file file))))
 
 (finalize)

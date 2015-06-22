@@ -2,8 +2,11 @@
 (defpackage cl-gists.gist
   (:use :cl
         :annot.doc
+        :cl-gists.util
         :cl-gists.user
-        :cl-gists.file)
+        :cl-gists.file
+        :cl-gists.fork
+        :cl-gists.history)
   (:export :cl-gists.gist
            :gist
            :gist-url
@@ -22,6 +25,8 @@
            :gist-git-push-url
            :gist-created-at
            :gist-updated-at
+           :gist-forks
+           :gist-history
            :make-gist
            :make-gist-from-json
            :make-gists-from-json)
@@ -54,11 +59,12 @@
   (git-pull-url nil :type (or null string))
   (git-push-url nil :type (or null string))
   (created-at nil :type (or null timestamp))
-  (updated-at nil :type (or null timestamp)))
+  (updated-at nil :type (or null timestamp))
+  (forks nil :type list)
+  (history nil :type list))
 
-@export
 (defun make-gist (&key url forks-url commits-url id description public owner user files comments
-                    comments-url html-url git-pull-url git-push-url created-at updated-at)
+                    comments-url html-url git-pull-url git-push-url created-at updated-at forks history)
   (%make-gist :url url
               :forks-url forks-url
               :commits-url commits-url
@@ -67,42 +73,28 @@
               :public public
               :owner (apply #'make-user owner)
               :user user
-              :files (mapcar #'(lambda (alist) (apply #'make-file alist)) files)
+              :files (make-files files)
               :comments comments
               :comments-url comments-url
               :html-url html-url
               :git-pull-url git-pull-url
               :git-push-url git-push-url
               :created-at (parse-timestring created-at)
-              :updated-at (parse-timestring updated-at)))
+              :updated-at (parse-timestring updated-at)
+              :forks (make-forks forks)
+              :history (make-histories history)))
 
-(defun lispify (string)
-  (string-upcase (substitute #\- #\_ string)))
-
-(defun format-keyword (keyword)
-  (intern (lispify (symbol-name keyword)) :keyword))
-
-(defun format-plist (plist)
-  (loop for (key value) on plist by #'cddr
-        nconc (list (format-keyword key) value)))
-
-(defun format-file-plist (plist)
-  (loop for (name value-plist) on plist by #'cddr
-        for filename = (or (getf value-plist :filename) (symbol-name name))
-        collecting (append (list :name filename)
-                           (remove-from-plist (format-plist value-plist) :filename))))
-
-(defun format-gist-plist (plist)
-  (append (list :files (format-file-plist (getf plist :files))
-                :owner (format-plist (getf plist :owner)))
-          (remove-from-plist plist :files :owner)))
-
+(defun parse-gist (json)
+  (flet ((lispify (key)
+           (string-upcase (substitute #\- #\_ key))))
+    (parse json
+           :keyword-normalizer #'lispify
+           :normalize-all t
+           :exclude-normalize-keys '("FILES"))))
 @export
 (defun make-gist-from-json (json)
-  (apply #'make-gist (format-gist-plist (parse json :keyword-normalizer #'lispify))))
+  (apply #'make-gist (parse-gist json)))
 
 @export
 (defun make-gists-from-json (json)
-  (mapcar #'(lambda (plist) (apply #'make-gist (format-gist-plist plist)))
-          (parse json :keyword-normalizer #'lispify)))
-    
+  (mapcar #'(lambda (plist) (apply #'make-gist plist)) (parse-gist json)))
