@@ -88,8 +88,9 @@
 
 (defun format-file-plist (plist)
   (loop for (name value-plist) on plist by #'cddr
-        collecting (append (list :name (symbol-name name))
-                           (format-plist value-plist))))
+        for filename = (or (getf value-plist :filename) (symbol-name name))
+        collecting (append (list :name filename)
+                           (remove-from-plist (format-plist value-plist) :filename))))
 
 (defun format-gist-plist (plist)
   (append (list :files (format-file-plist (getf plist :files))
