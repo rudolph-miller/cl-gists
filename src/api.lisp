@@ -50,6 +50,11 @@
 
 @doc
 "Create a gist."
+#| 
+Task: Have to check filename
+See: https://developer.github.com/v3/gists/#create-a-gist
+Note: Don't name your files "gistfile" with a numerical suffix. This is the format of the automatic naming scheme that Gist uses internally.
+|#
 (defun create-gist (gist)
   (check-type gist gist)
   (let ((uri (uri (format nil "~a/gists" +api-base-uri+)))
