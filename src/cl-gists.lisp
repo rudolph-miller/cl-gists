@@ -61,7 +61,9 @@
                 :gist-git-pull-url
                 :gist-git-push-url
                 :gist-created-at
-                :gist-updated-at)
+                :gist-updated-at
+                :gist-forks
+                :gist-history)
   (:import-from :cl-gists.api
                 :list-gists
                 :get-gist)
@@ -130,6 +132,8 @@
            :gist-git-push-url
            :gist-created-at
            :gist-updated-at
+           :gist-forks
+           :gist-history
 
            ;; api
            :list-gists

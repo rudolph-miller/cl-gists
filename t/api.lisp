@@ -27,9 +27,15 @@
     (list-gists-test (:since (mytoday)) ":since.")))
 
 (subtest "get-gist"
-  (let ((gist (car (list-gists))))
-    (is-type (get-gist (gist-id gist))
+  (let ((target-gist (car (list-gists))))
+    (is-type (get-gist (gist-id target-gist))
              'gist
-             "can get-gist.")))
+             "without :sha.")
+
+    (let* ((gist (get-gist (gist-id target-gist)))
+           (version (history-version (car (gist-history gist)))))
+      (is-type (get-gist (gist-id gist) :sha version)
+               'gist
+               "with :sha."))))
 
 (finalize)

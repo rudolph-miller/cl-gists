@@ -37,7 +37,11 @@
 
 @doc
 "Get a single gist."
-(defun get-gist (id)
+(defun get-gist (id &key sha)
   (check-type id string)
-  (let ((uri (uri (format nil "~a/gists/~a" +api-base-uri+ id))))
-    (make-gist-from-json (get-request uri))))
+  (let ((uri-components (list id "/gists/" +api-base-uri+)))
+    (when sha
+      (push "/" uri-components)
+      (push sha uri-components))
+    (let ((uri (uri (apply #'concatenate 'string (nreverse uri-components)))))
+      (make-gist-from-json (get-request uri)))))
