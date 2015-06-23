@@ -28,9 +28,9 @@
   (url nil :type (or null string))
   (version nil :type (or null string))
   (user nil :type (or null user))
-  (deletions 0 :type (or null integer))
-  (additions 0 :type (or null integer))
-  (total 0 :type (or null integer))
+  (deletions nil :type (or null integer))
+  (additions nil :type (or null integer))
+  (total nil :type (or null integer))
   (committed-at nil :type (or null timestamp)))
 
 (defun make-history (&key url version user deletions additions total committed-at)

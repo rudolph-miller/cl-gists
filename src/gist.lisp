@@ -7,6 +7,15 @@
         :cl-gists.file
         :cl-gists.fork
         :cl-gists.history)
+  (:import-from :alexandria
+                :remove-from-plist)
+  (:import-from :local-time
+                :timestamp
+                :parse-timestring)
+  (:import-from :trivial-types
+                :property-list-p)
+  (:import-from :jonathan
+                :parse)
   (:export :cl-gists.gist
            :gist
            :gist-url
@@ -29,14 +38,7 @@
            :gist-history
            :make-gist
            :make-gist-from-json
-           :make-gists-from-json)
-  (:import-from :alexandria
-                :remove-from-plist)
-  (:import-from :local-time
-                :timestamp
-                :parse-timestring)
-  (:import-from :jonathan
-                :parse))
+           :make-gists-from-json))
 (in-package :cl-gists.gist)
 
 (syntax:use-syntax :annot)
@@ -53,7 +55,7 @@
   (owner nil :type (or null user))
   (user nil) ;; Not sure what kind of object.
   (files nil :type list) ;; List of file.
-  (comments 0 :type integer)
+  (comments nil :type (or null integer))
   (comments-url nil :type (or null string))
   (html-url nil :type (or null string))
   (git-pull-url nil :type (or null string))
@@ -79,22 +81,31 @@
               :html-url html-url
               :git-pull-url git-pull-url
               :git-push-url git-push-url
-              :created-at (parse-timestring created-at)
-              :updated-at (parse-timestring updated-at)
+              :created-at (and created-at (parse-timestring created-at))
+              :updated-at (and updated-at (parse-timestring updated-at))
               :forks (make-forks forks)
               :history (make-histories history)))
 
 (defun parse-gist (json)
   (flet ((lispify (key)
-           (string-upcase (substitute #\- #\_ key))))
-    (parse json
-           :keyword-normalizer #'lispify
-           :normalize-all t
-           :exclude-normalize-keys '("FILES"))))
-@export
+           (string-upcase (substitute #\- #\_ key)))
+         (format-files (plist)
+           (setf (getf plist :files)
+                 (loop for (name value-plist) on (getf plist :files) by #'cddr
+                       for filename = (or (getf value-plist :filename) name)
+                       collecting (append (list :name filename)
+                                          (remove-from-plist value-plist :filename))))
+           plist))
+    (let ((parsed (parse json
+                         :keyword-normalizer #'lispify
+                         :normalize-all t
+                         :exclude-normalize-keys '("FILES"))))
+      (if (property-list-p parsed)
+          (format-files parsed)
+          (mapcar #'format-files parsed)))))
+
 (defun make-gist-from-json (json)
   (apply #'make-gist (parse-gist json)))
 
-@export
 (defun make-gists-from-json (json)
   (mapcar #'(lambda (plist) (apply #'make-gist plist)) (parse-gist json)))

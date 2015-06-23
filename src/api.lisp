@@ -7,6 +7,8 @@
         :cl-gists.user
         :cl-gists.file
         :cl-gists.gist)
+  (:import-from :jonathan
+                :to-json)
   (:import-from :local-time
                 :timestamp
                 :format-timestring))
@@ -45,3 +47,16 @@
       (push sha uri-components))
     (let ((uri (uri (apply #'concatenate 'string (nreverse uri-components)))))
       (make-gist-from-json (get-request uri)))))
+
+@doc
+"Create a gist."
+(defun create-gist (gist)
+  (check-type gist gist)
+  (let ((uri (uri (format nil "~a/gists" +api-base-uri+)))
+        (content (to-json `(("description" . ,(gist-description gist))
+                            ("public" . ,(gist-public gist))
+                            ("files" . ,(loop for file in (gist-files gist)
+                                              collecting (cons (file-name file)
+                                                               `(("content" . ,(file-content file)))))))
+                          :from :alist)))
+    (make-gist-from-json (post-request uri content))))

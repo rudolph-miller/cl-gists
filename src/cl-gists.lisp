@@ -63,10 +63,12 @@
                 :gist-created-at
                 :gist-updated-at
                 :gist-forks
-                :gist-history)
+                :gist-history
+                :make-gist)
   (:import-from :cl-gists.api
                 :list-gists
-                :get-gist)
+                :get-gist
+                :create-gist)
   (:export ;; user
            :user
            :user-login
@@ -134,8 +136,10 @@
            :gist-updated-at
            :gist-forks
            :gist-history
+           :make-gist
 
            ;; api
            :list-gists
-           :get-gist))
+           :get-gist
+           :create-gist))
 (in-package :cl-gists)

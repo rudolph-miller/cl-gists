@@ -24,16 +24,12 @@
 "Structure of File."
 (defstruct file
   (name nil :type (or null string))
-  (size 0 :type integer)
+  (size nil :type (or null integer))
   (raw-url nil :type (or null string))
   (type nil :type (or null string))
   (truncated nil :type boolean)
   (language nil :type (or null string))
   (content nil :type (or null string)))
 
-(defun make-files (files)
-  (loop for (name plist) on files by #'cddr
-        for formatted-plist = (format-plist plist)
-        for filename = (or (getf formatted-plist :filename) (symbol-name name))
-        collecting (apply #'make-file (append (list :name filename)
-                                              (remove-from-plist formatted-plist :filename)))))
+(defun make-files (list)
+  (mapcar #'(lambda (plist) (apply #'make-file plist)) list))

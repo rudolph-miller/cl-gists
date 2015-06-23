@@ -5,6 +5,7 @@
         :cl-gists-test.init
         :cl-gists)
   (:import-from :cl-gists.gist
+                :parse-gist
                 :make-gist-from-json
                 :make-gists-from-json))
 (in-package :cl-gists-test.gist)

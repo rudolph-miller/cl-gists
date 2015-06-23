@@ -26,31 +26,15 @@
     (test-file file)))
 
 (subtest "make-files"
-  (subtest "without filename"
-    (let ((file (car (make-files '(:|sample.lisp| (:size 500
-                                                   :filename "sample.lisp"
-                                                   :raw-url "https://gist.githubusercontent.com/anonymous/abcde/sample.lisp"
-                                                   :language "Common Lisp"
-                                                   :type "text/plain"
-                                                   :truncated nil
-                                                   :content "Sample text."))))))
+    (let ((file (car (make-files '((:size 500
+                                    :name "sample.lisp"
+                                    :raw-url "https://gist.githubusercontent.com/anonymous/abcde/sample.lisp"
+                                    :language "Common Lisp"
+                                    :type "text/plain"
+                                    :truncated nil
+                                    :content "Sample text."))))))
       (is-type file
                'file
                "can make-files.")
 
       (test-file file)))
-
-  (subtest "with filename"
-    (let ((file (car (make-files '(:|sample.lisp| (:size 500
-                                                   :raw-url "https://gist.githubusercontent.com/anonymous/abcde/sample.lisp"
-                                                   :language "Common Lisp"
-                                                   :type "text/plain"
-                                                   :truncated nil
-                                                   :content "Sample text."))))))
-      (is-type file
-               'file
-               "can make-files.")
-
-      (test-file file))))
-
-(finalize)

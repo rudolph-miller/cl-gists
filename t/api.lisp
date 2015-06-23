@@ -38,4 +38,7 @@
                'gist
                "with :sha."))))
 
+(subtest "create-gist"
+  (skip 1 "Have to stub request."))
+
 (finalize)

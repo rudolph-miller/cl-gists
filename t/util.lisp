@@ -15,21 +15,17 @@
       "2014-12-31T12:00:00Z"
       "can format timestamp."))
 
-(subtest "get-request"
-  (is-type (get-request (uri "https://google.co.jp"))
+(subtest "request"
+  (is-type (request (uri "https://google.co.jp") :method :get)
            'string
            "string.")
 
-  (is-type (get-request (uri "https://api.github.com"))
+  (is-type (request (uri "https://api.github.com") :method :get)
            'string
            "octets.")
 
-  (is-error (get-request (uri "https://api.github.com1"))
+  (is-error (request (uri "https://api.github.com1") :method :get)
             'error
             "error."))
-
-(subtest "parse-json")
-
-(subtest "restore-key")
 
 (finalize)

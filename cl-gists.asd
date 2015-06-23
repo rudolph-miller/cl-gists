@@ -22,6 +22,7 @@
                :cl-syntax-annot
                :alexandria
                :local-time
+               :trivial-types
                :quri
                :dexador
                :babel
