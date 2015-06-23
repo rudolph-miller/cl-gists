@@ -38,3 +38,5 @@
                "can make-files.")
 
       (test-file file)))
+
+(finalize)
