@@ -11,7 +11,18 @@
                 :to-json)
   (:import-from :local-time
                 :timestamp
-                :format-timestring))
+                :format-timestring)
+  (:export :list-gists
+           :get-gist
+           :create-gist
+           :edit-gist
+           :list-gist-commits
+           :star-gist
+           :unstar-gist
+           :gist-starred-p
+           :fork-gist
+           :list-gist-forks
+           :delete-gist))
 (in-package :cl-gists.api)
 
 (syntax:use-syntax :annot)
@@ -85,3 +96,31 @@ Task: auth
                               :from :alist)))
         (make-gist-from-json (patch-request uri content)))
       (error "No id bound.")))
+
+@doc
+"List gist commits."
+(defun list-gist-commits)
+
+@doc
+"Star a gist."
+(defun star-gist)
+
+@doc
+"Unstar a gist."
+(defun unstar-gist)
+
+@doc
+"Check if a gist starred."
+(defun gist-starred-p)
+
+@doc
+"Fork a gist."
+(defun fork-gist)
+
+@doc
+"List gist forks."
+(defun list-gist-forks)
+
+@doc
+"Delete a gist."
+(defun delete-gist)

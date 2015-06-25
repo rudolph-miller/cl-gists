@@ -69,7 +69,15 @@
   (:import-from :cl-gists.api
                 :list-gists
                 :get-gist
-                :create-gist)
+                :create-gist
+                :edit-gist
+                :list-gist-commits
+                :star-gist
+                :unstar-gist
+                :gist-starred-p
+                :fork-gist
+                :list-gist-forks
+                :delete-gist)
   (:export ;; user
            :user
            :user-login
@@ -143,5 +151,13 @@
            ;; api
            :list-gists
            :get-gist
-           :create-gist))
+           :create-gist
+           :edit-gist
+           :list-gist-commits
+           :star-gist
+           :unstar-gist
+           :gist-starred-p
+           :fork-gist
+           :list-gist-forks
+           :delete-gist))
 (in-package :cl-gists)

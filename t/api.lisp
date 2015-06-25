@@ -41,7 +41,25 @@
 (subtest "create-gist"
   (skip 1 "Have to stub request."))
 
-(subtest "edit-gist"
+(subtest "list-gist-commits"
+  (skip 1 "Have to stub request."))
+
+(subtest "star-gist"
+  (skip 1 "Have to stub request."))
+
+(subtest "unstar-gist"
+  (skip 1 "Have to stub request."))
+
+(subtest "gist-starred-p"
+  (skip 1 "Have to stub request."))
+
+(subtest "fork-gist"
+  (skip 1 "Have to stub request."))
+
+(subtest "list-gist-forks"
+  (skip 1 "Have to stub request."))
+
+(subtest "delete-gist"
   (skip 1 "Have to stub request."))
 
 (finalize)
