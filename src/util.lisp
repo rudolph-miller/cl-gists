@@ -32,7 +32,11 @@
        (if (typep body 'string)
            body
            (octets-to-string body :encoding :utf-8)))
-      (t (error "Status is not 200."))))) ;; Taks: More precise error.
+      (t (error "URI: ~a~%Method: ~a~%Content: ~a~%Status: ~a~%Message: ~a~%"
+                uri
+                method
+                content
+                status (octets-to-string body :encoding :utf-8))))))
 
 (defun get-request (uri)
   (request uri :method :get))
