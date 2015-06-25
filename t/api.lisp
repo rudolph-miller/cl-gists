@@ -41,4 +41,7 @@
 (subtest "create-gist"
   (skip 1 "Have to stub request."))
 
+(subtest "edit-gist"
+  (skip 1 "Have to stub request."))
+
 (finalize)

@@ -14,6 +14,7 @@
            :file-truncated
            :file-language
            :file-content
+           :file-old-name
            :make-file
            :make-files))
 (in-package :cl-gists.file)
@@ -22,14 +23,16 @@
 
 @doc
 "Structure of File."
-(defstruct file
+(defstruct (file (:constructor make-file (&key name size raw-url type truncated language content old-name
+                                          &aux (old-name (or old-name name)))))
   (name nil :type (or null string))
   (size nil :type (or null integer))
   (raw-url nil :type (or null string))
   (type nil :type (or null string))
   (truncated nil :type boolean)
   (language nil :type (or null string))
-  (content nil :type (or null string)))
+  (content nil :type (or null string))
+  (old-name nil :type (or null string) :read-only t))
 
 (defun make-files (list)
   (mapcar #'(lambda (plist) (apply #'make-file plist)) list))

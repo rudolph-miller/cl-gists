@@ -65,3 +65,23 @@ Note: Don't name your files "gistfile" with a numerical suffix. This is the form
                                                                `(("content" . ,(file-content file)))))))
                           :from :alist)))
     (make-gist-from-json (post-request uri content))))
+
+@doc
+"Edit a gist."
+#|
+Task: auth
+|#
+(defun edit-gist (gist)
+  (check-type gist gist)
+  (if (gist-id gist)
+      (let ((uri (uri (format nil "~a/gists/~a" +api-base-uri+ (gist-id gist))))
+            (content (to-json `(("description" . ,(gist-description gist))
+                                ("public" . ,(gist-public gist))
+                                ("files" . ,(loop for file in (gist-files gist)
+                                                  collecting (cons (or (file-old-name file) (file-name file))
+                                                                   (if (file-content file)
+                                                                       `(("content" . ,(file-content file)))
+                                                                       :null)))))
+                              :from :alist)))
+        (make-gist-from-json (patch-request uri content)))
+      (error "No id bound.")))

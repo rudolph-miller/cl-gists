@@ -40,7 +40,7 @@
 (defun post-request (uri &optional content)
   (request uri :method :post :content content))
 
-(defun patche-request (uri &optional content)
+(defun patch-request (uri &optional content)
   (request uri :method :patch :content content))
 
 (defun format-plist (plist)
