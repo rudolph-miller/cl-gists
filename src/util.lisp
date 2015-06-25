@@ -1,6 +1,8 @@
 (in-package :cl-user)
 (defpackage cl-gists.util
   (:use :cl)
+  (:import-from :alexandria
+                :remove-from-plist)
   (:import-from :local-time
                 :format-timestring
                 :+utc-zone+)
@@ -8,12 +10,16 @@
                 :render-uri)
   (:import-from :babel
                 :octets-to-string)
+  (:import-from :trivial-types
+                :property-list-p)
+  (:import-from :jonathan
+                :parse)
   (:export :format-timestring-for-api
            :request
            :get-request
            :post-request
            :patch-request
-           :format-plist))
+           :parse-json))
 (in-package :cl-gists.util)
 
 (defvar *raw-keyword* "raw_")
@@ -47,7 +53,21 @@
 (defun patch-request (uri &optional content)
   (request uri :method :patch :content content))
 
-(defun format-plist (plist)
-  (loop for (key value) on plist by #'cddr
-        nconc (list (intern (string-upcase (symbol-name key)) :keyword)
-                    value)))
+(defun parse-json (json)
+  (flet ((lispify (key)
+           (string-upcase (substitute #\- #\_ key)))
+         (format-files (plist)
+           (when (getf plist :files)
+             (setf (getf plist :files)
+                   (loop for (name value-plist) on (getf plist :files) by #'cddr
+                         for filename = (or (getf value-plist :filename) name)
+                         collecting (append (list :name filename)
+                                            (remove-from-plist value-plist :filename)))))
+           plist))
+    (let ((parsed (parse json
+                         :keyword-normalizer #'lispify
+                         :normalize-all t
+                         :exclude-normalize-keys '("FILES"))))
+      (if (property-list-p parsed)
+          (format-files parsed)
+          (mapcar #'format-files parsed)))))

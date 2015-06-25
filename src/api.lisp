@@ -99,7 +99,10 @@ Task: auth
 
 @doc
 "List gist commits."
-(defun list-gist-commits)
+(defun list-gist-commits (id)
+  (check-type id string)
+  (let ((uri (uri (format nil "~a/gists/~a/commits" +api-base-uri+ id))))
+    (make-histories-from-json (get-request uri))))
 
 @doc
 "Star a gist."

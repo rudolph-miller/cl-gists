@@ -7,15 +7,9 @@
         :cl-gists.file
         :cl-gists.fork
         :cl-gists.history)
-  (:import-from :alexandria
-                :remove-from-plist)
   (:import-from :local-time
                 :timestamp
                 :parse-timestring)
-  (:import-from :trivial-types
-                :property-list-p)
-  (:import-from :jonathan
-                :parse)
   (:export :cl-gists.gist
            :gist
            :gist-url
@@ -86,26 +80,8 @@
               :forks (make-forks forks)
               :history (make-histories history)))
 
-(defun parse-gist (json)
-  (flet ((lispify (key)
-           (string-upcase (substitute #\- #\_ key)))
-         (format-files (plist)
-           (setf (getf plist :files)
-                 (loop for (name value-plist) on (getf plist :files) by #'cddr
-                       for filename = (or (getf value-plist :filename) name)
-                       collecting (append (list :name filename)
-                                          (remove-from-plist value-plist :filename))))
-           plist))
-    (let ((parsed (parse json
-                         :keyword-normalizer #'lispify
-                         :normalize-all t
-                         :exclude-normalize-keys '("FILES"))))
-      (if (property-list-p parsed)
-          (format-files parsed)
-          (mapcar #'format-files parsed)))))
-
 (defun make-gist-from-json (json)
-  (apply #'make-gist (parse-gist json)))
+  (apply #'make-gist (parse-json json)))
 
 (defun make-gists-from-json (json)
-  (mapcar #'(lambda (plist) (apply #'make-gist plist)) (parse-gist json)))
+  (mapcar #'(lambda (plist) (apply #'make-gist plist)) (parse-json json)))

@@ -2,6 +2,7 @@
 (defpackage cl-gists.history
   (:use :cl
         :annot.doc
+        :cl-gists.util
         :cl-gists.user)
   (:import-from :local-time
                 :timestamp
@@ -17,7 +18,8 @@
            :history-total
            :history-committed-at
            :make-history
-           :make-histories))
+           :make-histories
+           :make-histories-from-json))
 (in-package :cl-gists.history)
 
 (syntax:use-syntax :annot)
@@ -49,3 +51,6 @@
                      (remove-from-plist plist :change-status)))))
     (mapcar #'(lambda (plist) (apply #'make-history (format-plist-for-history plist)))
             list)))
+
+(defun make-histories-from-json (json)
+  (make-histories (parse-json json)))
