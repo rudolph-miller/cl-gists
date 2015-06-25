@@ -110,7 +110,7 @@ Task: auth
   (check-type id-or-gist (or string gist))
   (let* ((id (get-gist-id id-or-gist))
          (uri (uri (format nil "~a/gists/~a/commits" +api-base-uri+ id))))
-      (make-histories-from-json (get-request uri))))
+      (make-histories (parse-json (get-request uri)))))
 
 @doc
 "Star a gist."

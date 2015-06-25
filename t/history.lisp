@@ -8,8 +8,7 @@
                 :parse-json)
   (:import-from :cl-gists.history
                 :make-history
-                :make-histories
-                :make-histories-from-json))
+                :make-histories))
 (in-package :cl-gists-test.history)
 
 (plan nil)

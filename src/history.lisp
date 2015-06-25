@@ -18,8 +18,7 @@
            :history-total
            :history-committed-at
            :make-history
-           :make-histories
-           :make-histories-from-json))
+           :make-histories))
 (in-package :cl-gists.history)
 
 (syntax:use-syntax :annot)
