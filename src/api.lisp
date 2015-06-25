@@ -77,7 +77,7 @@ Note: Don't name your files "gistfile" with a numerical suffix. This is the form
                                               collecting (cons (file-name file)
                                                                `(("content" . ,(file-content file)))))))
                           :from :alist)))
-    (apply #'make-gist (parse-json (post-request uri content)))))
+    (apply #'make-gist (parse-json (post-request uri :content content)))))
 
 @doc
 "Edit a gist."
@@ -96,7 +96,7 @@ Task: auth
                                                                        `(("content" . ,(file-content file)))
                                                                        :null)))))
                               :from :alist)))
-        (apply #'make-gist (parse-json (patch-request uri content))))
+        (apply #'make-gist (parse-json (patch-request uri :content content))))
       (error "No id bound.")))
 
 (defun get-gist-id (id-or-gist)

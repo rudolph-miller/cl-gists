@@ -33,8 +33,10 @@
                                (:hour 2 #\0) ":" (:min 2 #\0) ":" (:sec 2 #\0) "Z")
                      :timezone +utc-zone+))
 
-(defun request (uri &key method content ignore-statuses)
-  (multiple-value-bind (body status) (dex:request (render-uri uri) :method method :content content)
+(defun request (uri &key method content ignore-statuses basic-auth)
+  (multiple-value-bind (body status) (dex:request (render-uri uri) :method method
+                                                                   :content content
+                                                                   :basic-auth basic-auth)
     (let ((string-body  (if (typep body 'string)
                             body
                             (octets-to-string body :encoding :utf-8))))
@@ -50,19 +52,19 @@
                       status
                       string-body)))))))
 
-(defun get-request (uri &key ignore-statuses)
+(defun get-request (uri &key ignore-statuses basic-auth)
   (request uri :method :get :ignore-statuses ignore-statuses))
 
-(defun post-request (uri &optional content)
+(defun post-request (uri &key content basic-auth)
   (request uri :method :post :content content))
 
-(defun put-request (uri &optional content)
+(defun put-request (uri &key content basic-auth)
   (request uri :method :put :content content))
 
-(defun delete-request (uri &optional content)
+(defun delete-request (uri &key content basic-auth)
   (request uri :method :delete :content content))
 
-(defun patch-request (uri &optional content)
+(defun patch-request (uri &key content basic-auth)
   (request uri :method :patch :content content))
 
 (defun parse-json (json)
