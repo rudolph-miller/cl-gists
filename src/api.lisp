@@ -6,6 +6,7 @@
         :cl-gists.util
         :cl-gists.user
         :cl-gists.file
+        :cl-gists.history
         :cl-gists.gist)
   (:import-from :jonathan
                 :to-json)
@@ -97,16 +98,29 @@ Task: auth
         (make-gist-from-json (patch-request uri content)))
       (error "No id bound.")))
 
+(defun get-gist-id (id-or-gist)
+  (etypecase id-or-gist
+    (string id-or-gist)
+    (gist (gist-id id-or-gist))))
+
 @doc
 "List gist commits."
-(defun list-gist-commits (id)
-  (check-type id string)
-  (let ((uri (uri (format nil "~a/gists/~a/commits" +api-base-uri+ id))))
-    (make-histories-from-json (get-request uri))))
+(defun list-gist-commits (id-or-gist)
+  (check-type id-or-gist (or string gist))
+  (let* ((id (get-gist-id id-or-gist))
+         (uri (uri (format nil "~a/gists/~a/commits" +api-base-uri+ id))))
+      (make-histories-from-json (get-request uri)))))
 
 @doc
 "Star a gist."
-(defun star-gist)
+(defun star-gist (id-or-gist)
+  (check-type id-or-gist (or string gist))
+  (let* ((id (get-gist-id id-or-gist))
+         (uri (uri (format nil "~a/gists/~a/star" +api-base-uri+ id))))
+    (multiple-value-bind (body status) (put-request uri)
+      (declare (ignore body))
+      (when (= status 204)
+        t))))
 
 @doc
 "Unstar a gist."

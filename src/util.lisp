@@ -18,6 +18,8 @@
            :request
            :get-request
            :post-request
+           :put-request
+           :delete-request
            :patch-request
            :parse-json))
 (in-package :cl-gists.util)
@@ -31,24 +33,34 @@
                                (:hour 2 #\0) ":" (:min 2 #\0) ":" (:sec 2 #\0) "Z")
                      :timezone +utc-zone+))
 
-(defun request (uri &key method content)
+(defun request (uri &key method content ignore-statuses)
   (multiple-value-bind (body status) (dex:request (render-uri uri) :method method :content content)
-    (cond
-      ((and (<= 200 status) (<= status 299))
-       (if (typep body 'string)
-           body
-           (octets-to-string body :encoding :utf-8)))
-      (t (error "URI: ~a~%Method: ~a~%Content: ~a~%Status: ~a~%Message: ~a~%"
-                uri
-                method
-                content
-                status (octets-to-string body :encoding :utf-8))))))
+    (let ((string-body  (if (typep body 'string)
+                            body
+                            (octets-to-string body :encoding :utf-8))))
+      (cond
+        ((and (<= 200 status) (<= status 299))
+         (values string-body status))
+        (t (if (and ignore-statuses (member status ignore-statuses))
+               (values string-body status)
+               (error "URI: ~a~%Method: ~a~%Content: ~a~%Status: ~a~%Message: ~a~%"
+                      uri
+                      method
+                      content
+                      status
+                      string-body)))))))
 
 (defun get-request (uri)
   (request uri :method :get))
 
 (defun post-request (uri &optional content)
   (request uri :method :post :content content))
+
+(defun put-request (uri &optional content)
+  (request uri :method :put :content content))
+
+(defun delete-request (uri &optional content ignore-statuses)
+  (request uri :method :delete :content content :ignore-statuses ignore-statuses))
 
 (defun patch-request (uri &optional content)
   (request uri :method :patch :content content))
