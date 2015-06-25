@@ -147,7 +147,11 @@ Task: auth
 
 @doc
 "Fork a gist."
-(defun fork-gist)
+(defun fork-gist (id-or-gist)
+  (check-type id-or-gist (or string gist))
+  (let* ((id (get-gist-id id-or-gist))
+         (uri (uri (format nil "~a/gists/~a/forks" +api-base-uri+ id))))
+    (make-gist-from-json (post-request uri))))
 
 @doc
 "List gist forks."
