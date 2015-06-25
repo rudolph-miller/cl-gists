@@ -50,8 +50,8 @@
                       status
                       string-body)))))))
 
-(defun get-request (uri)
-  (request uri :method :get))
+(defun get-request (uri &key ignore-statuses)
+  (request uri :method :get :ignore-statuses ignore-statuses))
 
 (defun post-request (uri &optional content)
   (request uri :method :post :content content))
@@ -59,8 +59,8 @@
 (defun put-request (uri &optional content)
   (request uri :method :put :content content))
 
-(defun delete-request (uri &optional content ignore-statuses)
-  (request uri :method :delete :content content :ignore-statuses ignore-statuses))
+(defun delete-request (uri &optional content)
+  (request uri :method :delete :content content))
 
 (defun patch-request (uri &optional content)
   (request uri :method :patch :content content))

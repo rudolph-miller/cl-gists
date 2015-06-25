@@ -124,11 +124,26 @@ Task: auth
 
 @doc
 "Unstar a gist."
-(defun unstar-gist)
+(defun unstar-gist (id-or-gist)
+  (check-type id-or-gist (or string gist))
+  (let* ((id (get-gist-id id-or-gist))
+         (uri (uri (format nil "~a/gists/~a/star" +api-base-uri+ id))))
+    (multiple-value-bind (body status) (delete-request uri)
+      (declare (ignore body))
+      (when (= status 204)
+        t))))
 
 @doc
 "Check if a gist starred."
-(defun gist-starred-p)
+(defun gist-starred-p (id-or-gist)
+  (check-type id-or-gist (or string gist))
+  (let* ((id (get-gist-id id-or-gist))
+         (uri (uri (format nil "~a/gists/~a/star" +api-base-uri+ id))))
+    (multiple-value-bind (body status) (get-request uri :ignore-statuses (list 404))
+      (declare (ignore body))
+      (ecase status
+        (204 t)
+        (404 nil)))))
 
 @doc
 "Fork a gist."
