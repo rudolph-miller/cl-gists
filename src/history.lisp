@@ -52,5 +52,3 @@
     (mapcar #'(lambda (plist) (apply #'make-history (format-plist-for-history plist)))
             list)))
 
-(defun make-histories-from-json (json)
-  (make-histories (parse-json json)))

@@ -4,10 +4,11 @@
         :prove
         :cl-gists-test.init
         :cl-gists)
+  (:import-from :cl-gists.util
+                :parse-json)
   (:import-from :cl-gists.gist
-                :parse-gist
-                :make-gist-from-json
-                :make-gists-from-json))
+                :make-gist
+                :make-gists))
 (in-package :cl-gists-test.gist)
 
 (plan nil)
@@ -166,19 +167,19 @@
     \"updated_at\": \"2011-06-20T11:34:15Z\"
   }]")
 
-(subtest "make-gist-from-json"
-  (let ((gist (make-gist-from-json *gist-json-string*)))
+(subtest "make-gist"
+  (let ((gist (apply #'make-gist (parse-json *gist-json-string*))))
     (is-type gist
              'gist
              "can make-gist.")
 
     (test-gist gist)))
 
-(subtest "make-gists-from-json"
-  (let ((gist (car (make-gists-from-json *gists-json-string*))))
+(subtest "make-gists"
+  (let ((gist (car (make-gists (parse-json *gists-json-string*)))))
     (is-type gist
              'gist
-             "can mapcar #'make-gist.")
+             "can make-gists.")
 
     (test-gist gist :excludes '(cl-gists.gist::forks cl-gists.gist::history))))
 

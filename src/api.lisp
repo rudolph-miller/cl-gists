@@ -6,6 +6,7 @@
         :cl-gists.util
         :cl-gists.user
         :cl-gists.file
+        :cl-gists.fork
         :cl-gists.history
         :cl-gists.gist)
   (:import-from :jonathan
@@ -47,7 +48,7 @@
     (let ((uri (uri (apply #'concatenate 'string (nreverse uri-components)))))
       (when since
         (setf (uri-query-params uri) `(("since" . ,(format-timestring nil since)))))
-      (make-gists-from-json (get-request uri)))))
+      (make-gists (parse-json (get-request uri))))))
 
 @doc
 "Get a single gist."
@@ -58,7 +59,7 @@
       (push "/" uri-components)
       (push sha uri-components))
     (let ((uri (uri (apply #'concatenate 'string (nreverse uri-components)))))
-      (make-gist-from-json (get-request uri)))))
+      (apply #'make-gist (parse-json (get-request uri))))))
 
 @doc
 "Create a gist."
@@ -76,7 +77,7 @@ Note: Don't name your files "gistfile" with a numerical suffix. This is the form
                                               collecting (cons (file-name file)
                                                                `(("content" . ,(file-content file)))))))
                           :from :alist)))
-    (make-gist-from-json (post-request uri content))))
+    (apply #'make-gist (parse-json (post-request uri content)))))
 
 @doc
 "Edit a gist."
@@ -95,7 +96,7 @@ Task: auth
                                                                        `(("content" . ,(file-content file)))
                                                                        :null)))))
                               :from :alist)))
-        (make-gist-from-json (patch-request uri content)))
+        (apply #'make-gist (parse-json (patch-request uri content))))
       (error "No id bound.")))
 
 (defun get-gist-id (id-or-gist)
@@ -109,7 +110,7 @@ Task: auth
   (check-type id-or-gist (or string gist))
   (let* ((id (get-gist-id id-or-gist))
          (uri (uri (format nil "~a/gists/~a/commits" +api-base-uri+ id))))
-      (make-histories-from-json (get-request uri)))))
+      (make-histories-from-json (get-request uri))))
 
 @doc
 "Star a gist."
@@ -151,12 +152,23 @@ Task: auth
   (check-type id-or-gist (or string gist))
   (let* ((id (get-gist-id id-or-gist))
          (uri (uri (format nil "~a/gists/~a/forks" +api-base-uri+ id))))
-    (make-gist-from-json (post-request uri))))
+    (apply #'make-gist (parse-json (post-request uri)))))
 
 @doc
 "List gist forks."
-(defun list-gist-forks)
+(defun list-gist-forks (id-or-gist)
+  (check-type id-or-gist (or string gist))
+  (let* ((id (get-gist-id id-or-gist))
+         (uri (uri (format nil "~a/gists/~a/forks" +api-base-uri+ id))))
+    (make-gists (parse-json (get-request uri)))))
 
 @doc
 "Delete a gist."
-(defun delete-gist)
+(defun delete-gist (id-or-gist)
+  (check-type id-or-gist (or string gist))
+  (let* ((id (get-gist-id id-or-gist))
+         (uri (uri (format nil "~a/gists/~a" +api-base-uri+ id))))
+    (multiple-value-bind (body status) (delete-request uri)
+      (declare (ignore body))
+      (when (= status 204)
+        t))))

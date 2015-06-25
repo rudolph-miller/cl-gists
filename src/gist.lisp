@@ -31,8 +31,7 @@
            :gist-forks
            :gist-history
            :make-gist
-           :make-gist-from-json
-           :make-gists-from-json))
+           :make-gists))
 (in-package :cl-gists.gist)
 
 (syntax:use-syntax :annot)
@@ -80,8 +79,5 @@
               :forks (make-forks forks)
               :history (make-histories history)))
 
-(defun make-gist-from-json (json)
-  (apply #'make-gist (parse-json json)))
-
-(defun make-gists-from-json (json)
-  (mapcar #'(lambda (plist) (apply #'make-gist plist)) (parse-json json)))
+(defun make-gists (list)
+  (mapcar #'(lambda (plist) (apply #'make-gist plist)) list))
