@@ -26,7 +26,8 @@
                :quri
                :dexador
                :babel
-               :jonathan)
+               :jonathan
+               :osicat)
   :components ((:module "src"
                 :serial t
                 :components

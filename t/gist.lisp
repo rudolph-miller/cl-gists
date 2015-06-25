@@ -40,6 +40,24 @@
       \"type\": \"User\",
       \"site_admin\": false
     },
+    \"fork_of\": {
+      \"url\": \"https://api.github.com/gists/dc6a799aa31b5f501d15\",
+      \"forks_url\": \"https://api.github.com/gists/dc6a799aa31b5f501d15/forks\",
+      \"commits_url\": \"https://api.github.com/gists/dc6a799aa31b5f501d15/commits\",
+      \"id\": \"dc6a799aa31b5f501d15\",
+      \"git_pull_url\": \"https://gist.github.com/dc6a799aa31b5f501d15.git\",
+      \"git_push_url\": \"https://gist.github.com/dc6a799aa31b5f501d15.git\",
+      \"html_url\": \"https://gist.github.com/dc6a799aa31b5f501d15\",
+      \"files\": {
+      },
+      \"public\": true,
+      \"created_at\": \"2015-06-25T18:58:27Z\",
+      \"updated_at\": \"2015-06-25T19:10:30Z\",
+      \"description\": \"sample\",
+      \"comments\": 0,
+      \"user\": null,
+      \"comments_url\": \"https://api.github.com/gists/dc6a799aa31b5f501d15/comments\"
+    },
     \"user\": null,
     \"files\": {
       \"ring.erl\": {
@@ -145,6 +163,24 @@
       \"received_events_url\": \"https://api.github.com/users/octocat/received_events\",
       \"type\": \"User\",
       \"site_admin\": false
+    },
+    \"fork_of\": {
+      \"url\": \"https://api.github.com/gists/dc6a799aa31b5f501d15\",
+      \"forks_url\": \"https://api.github.com/gists/dc6a799aa31b5f501d15/forks\",
+      \"commits_url\": \"https://api.github.com/gists/dc6a799aa31b5f501d15/commits\",
+      \"id\": \"dc6a799aa31b5f501d15\",
+      \"git_pull_url\": \"https://gist.github.com/dc6a799aa31b5f501d15.git\",
+      \"git_push_url\": \"https://gist.github.com/dc6a799aa31b5f501d15.git\",
+      \"html_url\": \"https://gist.github.com/dc6a799aa31b5f501d15\",
+      \"files\": {
+      },
+      \"public\": true,
+      \"created_at\": \"2015-06-25T18:58:27Z\",
+      \"updated_at\": \"2015-06-25T19:10:30Z\",
+      \"description\": \"sample\",
+      \"comments\": 0,
+      \"user\": null,
+      \"comments_url\": \"https://api.github.com/gists/dc6a799aa31b5f501d15/comments\"
     },
     \"user\": null,
     \"files\": {

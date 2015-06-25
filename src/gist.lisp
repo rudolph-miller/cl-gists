@@ -19,6 +19,7 @@
            :gist-description
            :gist-public
            :gist-owner
+           :gist-fork-of
            :gist-user
            :gist-files
            :gist-comments
@@ -46,6 +47,7 @@
   (description nil :type (or null string))
   (public nil :type boolean)
   (owner nil :type (or null user))
+  (fork-of nil :type (or null gist))
   (user nil) ;; Not sure what kind of object.
   (files nil :type list) ;; List of file.
   (comments nil :type (or null integer))
@@ -58,7 +60,7 @@
   (forks nil :type list)
   (history nil :type list))
 
-(defun make-gist (&key url forks-url commits-url id description public owner user files comments
+(defun make-gist (&key url forks-url commits-url id description public owner fork-of user files comments
                     comments-url html-url git-pull-url git-push-url created-at updated-at forks history)
   (%make-gist :url url
               :forks-url forks-url
@@ -67,6 +69,7 @@
               :description description
               :public public
               :owner (apply #'make-user owner)
+              :fork-of (when fork-of (apply #'make-gist fork-of))
               :user user
               :files (make-files files)
               :comments comments

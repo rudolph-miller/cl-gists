@@ -9,11 +9,11 @@
         :cl-gists.fork
         :cl-gists.history
         :cl-gists.gist)
-  (:import-from :jonathan
-                :to-json)
   (:import-from :local-time
                 :timestamp
                 :format-timestring)
+  (:import-from :jonathan
+                :to-json)
   (:export :list-gists
            :get-gist
            :create-gist
@@ -29,12 +29,21 @@
 
 (syntax:use-syntax :annot)
 
+(defun check-credentials ()
+  (unless (or (oauth-token *credentials*)
+              (and (username *credentials*)
+                   (password *credentials*)))
+    (error "One of OAuth token or Basic Authentication is requered.")))
+
+@doc
+"GitHub API Base URI."
 (defparameter +api-base-uri+ "https://api.github.com")
 
 @doc
 "List gists."
 (defun list-gists (&key username public starred since)
-  (assert (not (and public starred)))
+  (when (and public starred)
+    (error "Do not specify both of :public and :starred."))
   (check-type since (or null timestamp))
   (let ((uri-components (list +api-base-uri+)))
     (when username
@@ -86,6 +95,7 @@ Task: auth
 |#
 (defun edit-gist (gist)
   (check-type gist gist)
+  (check-credentials)
   (if (gist-id gist)
       (let ((uri (uri (format nil "~a/gists/~a" +api-base-uri+ (gist-id gist))))
             (content (to-json `(("description" . ,(gist-description gist))
@@ -110,12 +120,13 @@ Task: auth
   (check-type id-or-gist (or string gist))
   (let* ((id (get-gist-id id-or-gist))
          (uri (uri (format nil "~a/gists/~a/commits" +api-base-uri+ id))))
-      (make-histories (parse-json (get-request uri)))))
+    (make-histories (parse-json (get-request uri)))))
 
 @doc
 "Star a gist."
 (defun star-gist (id-or-gist)
   (check-type id-or-gist (or string gist))
+  (check-credentials)
   (let* ((id (get-gist-id id-or-gist))
          (uri (uri (format nil "~a/gists/~a/star" +api-base-uri+ id))))
     (multiple-value-bind (body status) (put-request uri)
@@ -127,6 +138,7 @@ Task: auth
 "Unstar a gist."
 (defun unstar-gist (id-or-gist)
   (check-type id-or-gist (or string gist))
+  (check-credentials)
   (let* ((id (get-gist-id id-or-gist))
          (uri (uri (format nil "~a/gists/~a/star" +api-base-uri+ id))))
     (multiple-value-bind (body status) (delete-request uri)
@@ -138,6 +150,7 @@ Task: auth
 "Check if a gist starred."
 (defun gist-starred-p (id-or-gist)
   (check-type id-or-gist (or string gist))
+  (check-credentials)
   (let* ((id (get-gist-id id-or-gist))
          (uri (uri (format nil "~a/gists/~a/star" +api-base-uri+ id))))
     (multiple-value-bind (body status) (get-request uri :ignore-statuses (list 404))
@@ -150,6 +163,7 @@ Task: auth
 "Fork a gist."
 (defun fork-gist (id-or-gist)
   (check-type id-or-gist (or string gist))
+  (check-credentials)
   (let* ((id (get-gist-id id-or-gist))
          (uri (uri (format nil "~a/gists/~a/forks" +api-base-uri+ id))))
     (apply #'make-gist (parse-json (post-request uri)))))
@@ -166,6 +180,7 @@ Task: auth
 "Delete a gist."
 (defun delete-gist (id-or-gist)
   (check-type id-or-gist (or string gist))
+  (check-credentials)
   (let* ((id (get-gist-id id-or-gist))
          (uri (uri (format nil "~a/gists/~a" +api-base-uri+ id))))
     (multiple-value-bind (body status) (delete-request uri)

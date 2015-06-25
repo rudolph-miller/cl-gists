@@ -1,6 +1,14 @@
 (in-package :cl-user)
 (defpackage cl-gists
   (:use :cl)
+  (:import-from :cl-gists.util
+                :*credentials*
+                :*github-username-env-var*
+                :*github-password-env-var*
+                :*github-oauth-token-env-var*
+                :username
+                :password
+                :oauth-token)
   (:import-from :cl-gists.user
                 :user
                 :user-login
@@ -54,6 +62,7 @@
                 :gist-description
                 :gist-public
                 :gist-owner
+                :gist-fork-of
                 :gist-user
                 :gist-files
                 :gist-comments
@@ -78,7 +87,16 @@
                 :fork-gist
                 :list-gist-forks
                 :delete-gist)
-  (:export ;; user
+  (:export ;; util
+           :*credentials*
+           :*github-username-env-var*
+           :*github-password-env-var*
+           :*github-oauth-token-env-var*
+           :username
+           :password
+           :oauth-token
+
+           ;; user
            :user
            :user-login
            :user-id
@@ -135,6 +153,7 @@
            :gist-description
            :gist-public
            :gist-owner
+           :gist-fork-of
            :gist-user
            :gist-files
            :gist-comments

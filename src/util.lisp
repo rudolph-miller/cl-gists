@@ -1,6 +1,9 @@
 (in-package :cl-user)
 (defpackage cl-gists.util
-  (:use :cl)
+  (:use :cl
+        :annot.doc)
+  (:import-from :osicat
+                :environment-variable)
   (:import-from :alexandria
                 :remove-from-plist)
   (:import-from :local-time
@@ -14,7 +17,14 @@
                 :property-list-p)
   (:import-from :jonathan
                 :parse)
-  (:export :format-timestring-for-api
+  (:export :*credentials*
+           :*github-username-env-var*
+           :*github-password-env-var*
+           :*github-oauth-token-env-var*
+           :username
+           :password
+           :oauth-token
+           :format-timestring-for-api
            :request
            :get-request
            :post-request
@@ -24,7 +34,46 @@
            :parse-json))
 (in-package :cl-gists.util)
 
+(syntax:use-syntax :annot)
+
 (defvar *raw-keyword* "raw_")
+
+@doc
+"Global variable of credentials."
+(defvar *credentials* nil)
+
+@doc
+"Environment variable for a username of GitHub."
+(defvar *github-username-env-var* "GITHUB_USERNAME")
+
+@doc
+"Environment variable for a password of GitHub."
+(defvar *github-password-env-var* "GITHUB_PASSWORD")
+
+@doc
+"Environment variable for a OAuth token of GitHub."
+(defvar *github-oauth-token-env-var* "GITHUB_OAUTH_TOKEN")
+
+@doc
+"Return the username."
+(defgeneric username (credentials)
+  (:method ((credentials t))
+    (declare (ignore credentials))
+    (environment-variable *github-username-env-var*)))
+
+@doc
+"Return the password."
+(defgeneric password (credentials)
+  (:method ((credentials t))
+    (declare (ignore credentials))
+    (environment-variable *github-password-env-var*)))
+
+@doc
+"Return the OAuth token."
+(defgeneric oauth-token (credentials)
+  (:method ((credentials t))
+    (declare (ignore credentials))
+    (environment-variable *github-oauth-token-env-var*)))
 
 (defun format-timestring-for-api (timestamp)
   (format-timestring nil
@@ -33,10 +82,17 @@
                                (:hour 2 #\0) ":" (:min 2 #\0) ":" (:sec 2 #\0) "Z")
                      :timezone +utc-zone+))
 
-(defun request (uri &key method content ignore-statuses basic-auth)
-  (multiple-value-bind (body status) (dex:request (render-uri uri) :method method
-                                                                   :content content
-                                                                   :basic-auth basic-auth)
+(defun request (uri &key method content ignore-statuses (credentials *credentials*))
+  (multiple-value-bind (body status) (dex:request (render-uri uri)
+                                                  :method method
+                                                  :content content
+                                                  :headers (when (oauth-token credentials)
+                                                             `(("Authorization" . ,(format nil "token ~a"
+                                                                                           (oauth-token credentials)))))
+                                                  :basic-auth (when (and (username credentials)
+                                                                         (password credentials))
+                                                                (cons (username credentials)
+                                                                      (password credentials))))
     (let ((string-body  (if (typep body 'string)
                             body
                             (octets-to-string body :encoding :utf-8))))
@@ -52,10 +108,10 @@
                       status
                       string-body)))))))
 
-(defun get-request (uri &key ignore-statuses basic-auth)
+(defun get-request (uri &key ignore-statuses)
   (request uri :method :get :ignore-statuses ignore-statuses))
 
-(defun post-request (uri &key content basic-auth)
+(defun post-request (uri &key content)
   (request uri :method :post :content content))
 
 (defun put-request (uri &key content basic-auth)

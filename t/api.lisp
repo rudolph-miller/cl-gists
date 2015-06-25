@@ -8,6 +8,8 @@
 
 (plan nil)
 
+(defvar *anonymous-gist-id* "dc6a799aa31b5f501d15")
+
 (subtest "list-gists"
   (macrolet ((list-gists-test (args comment)
                `(subtest ,comment
@@ -22,7 +24,7 @@
 
     (list-gists-test (:public t) ":public.")
 
-    (skip 1 ":starred.") ;; Task: Auth
+    (list-gists-test (:starred t) ":starred.")
 
     (list-gists-test (:since (mytoday)) ":since.")))
 
@@ -39,27 +41,86 @@
                "with :sha."))))
 
 (subtest "create-gist"
-  (skip 1 "Have to stub request."))
+  (let ((gist (create-gist (make-gist :description "sample" :public t :files (list (list :name "sample" :content "Sample."))))))
+    (ok (get-gist (gist-id gist))
+        "can create a gist.")
+
+    (delete-gist gist)))
+
+(defmacro with-new-gist ((var) &body body)
+  `(let ((,var (create-gist (make-gist :description "sample" :public t :files (list (list :name "sample" :content "Sample."))))))
+     ,@body
+     (ignore-errors (delete-gist (gist-id ,var)))))
 
 (subtest "list-gist-commits"
-  (skip 1 "Have to stub request."))
+  (with-new-gist (gist)
+    (is-type (car (list-gist-commits gist))
+             'history
+             "can git list of gist-commits.")))
 
 (subtest "star-gist"
-  (skip 1 "Have to stub request."))
+  (with-new-gist (gist)
+    (is (gist-starred-p gist)
+        nil
+        "At first, the gist is not starred.")
+
+    (star-gist gist)
+
+    (ok (gist-starred-p gist)
+        "can star the gist.")))
 
 (subtest "unstar-gist"
-  (skip 1 "Have to stub request."))
+  (with-new-gist (gist)
+    (star-gist gist)
+
+    (ok (gist-starred-p gist)
+        "At first, the gist is starred.")
+
+    (unstar-gist gist)
+
+    (is (gist-starred-p gist)
+        nil
+        "can unstar the gist.")))
 
 (subtest "gist-starred-p"
-  (skip 1 "Have to stub request."))
+  (with-new-gist (gist)
+    (is (gist-starred-p gist)
+        nil
+        "NIL.")
+
+    (star-gist gist)
+
+    (ok (gist-starred-p gist)
+        "T.")))
 
 (subtest "fork-gist"
-  (skip 1 "Have to stub request."))
+  (let* ((gist (get-gist *anonymous-gist-id*))
+         (forked (fork-gist gist)))
+    (is-type (get-gist (gist-id forked))
+             'gist
+             "can fork a gist.")
+
+    (delete-gist forked)))
 
 (subtest "list-gist-forks"
-  (skip 1 "Have to stub request."))
+  (let* ((gist (get-gist *anonymous-gist-id*))
+         (forked (fork-gist gist)))
+
+    (is-type (car (list-gist-forks gist))
+             'gist
+             "can get list of fork gists.")
+
+    (delete-gist forked)))
 
 (subtest "delete-gist"
-  (skip 1 "Have to stub request."))
+  (let ((gist (create-gist (make-gist :description "sample" :public t :files (list (list :name "sample" :content "hihi"))))))
+    (ok (get-gist (gist-id gist))
+        "At first, you can get the gist.")
+
+    (delete-gist gist)
+
+    (is-error (get-gist (gist-id gist))
+              'error
+              "can delete gist.")))
 
 (finalize)
