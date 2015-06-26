@@ -165,7 +165,7 @@
     (delete-gist forked)))
 
 (subtest "delete-gist"
-  (let ((gist (create-gist (make-gist :description "sample" :public t :files (list (list :name "sample" :content "hihi"))))))
+  (let ((gist (create-gist (make-gist :description "sample" :public t :files (list (list :name "sample" :content "Sample."))))))
     (ok (get-gist (gist-id gist))
         "At first, you can get the gist.")
 
