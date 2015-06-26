@@ -20,3 +20,4 @@
   (setf (gist-files) (list file1 file2))
 
   (edit-gist gist))
+;; => #S(GIST ...)

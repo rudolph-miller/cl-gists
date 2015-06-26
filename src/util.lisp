@@ -89,7 +89,8 @@
                                                   :headers (when (oauth-token credentials)
                                                              `(("Authorization" . ,(format nil "token ~a"
                                                                                            (oauth-token credentials)))))
-                                                  :basic-auth (when (and (username credentials)
+                                                  :basic-auth (when (and (not (oauth-token credentials))
+                                                                         (username credentials)
                                                                          (password credentials))
                                                                 (cons (username credentials)
                                                                       (password credentials))))
