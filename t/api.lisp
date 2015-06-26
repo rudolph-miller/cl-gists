@@ -62,6 +62,8 @@
 
       (edit-gist gist)
 
+      (sleep 5)
+
       (let ((new-gist (get-gist (gist-id gist))))
         (is (gist-description new-gist)
             description
@@ -76,6 +78,8 @@
 
       (edit-gist gist)
 
+      (sleep 5)
+
       (let ((new-gist (get-gist (gist-id gist))))
         (is-type (car (gist-files new-gist))
                  'file
@@ -88,14 +92,9 @@
 
         (edit-gist gist)
 
-        (let* ((files (gist-files
-                       ;; In local MBA it's ok with (progn (sleep 5) (get-gist (gist-id gist))), but not in CircleCI.
-                       (loop repeat 5
-                             for new-gist = (ignore-errors (get-gist (gist-id gist)))
-                             while (or (not new-gist)
-                                       (> (length (gist-files new-gist)) 1))
-                             do (sleep 3)
-                             finally (return new-gist))))
+        (sleep 5)
+
+        (let* ((files (gist-files (get-gist (gist-id gist))))
                (file (car files)))
           (is (length files)
               1
