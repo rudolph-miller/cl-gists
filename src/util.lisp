@@ -115,13 +115,13 @@
 (defun post-request (uri &key content)
   (request uri :method :post :content content))
 
-(defun put-request (uri &key content basic-auth)
+(defun put-request (uri &key content)
   (request uri :method :put :content content))
 
-(defun delete-request (uri &key content basic-auth)
+(defun delete-request (uri &key content)
   (request uri :method :delete :content content))
 
-(defun patch-request (uri &key content basic-auth)
+(defun patch-request (uri &key content)
   (request uri :method :patch :content content))
 
 (defun parse-json (json)
