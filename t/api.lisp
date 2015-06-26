@@ -88,7 +88,7 @@
 
         (edit-gist gist)
 
-        (sleep 1)
+        (sleep 8)
 
         (let* ((files (gist-files (get-gist (gist-id gist))))
                (file (car files)))
