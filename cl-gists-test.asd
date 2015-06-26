@@ -26,7 +26,7 @@
                  (:test-file "gist")
                  (:test-file "api")
                  (:test-file "cl-gists"))))
-  :description "Test system for cl-gists"
+  :description "Test system for cl-gists."
 
   :defsystem-depends-on (:prove-asdf)
   :perform (test-op :after (op c)
