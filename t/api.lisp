@@ -52,6 +52,56 @@
      ,@body
      (ignore-errors (delete-gist (gist-id ,var)))))
 
+(subtest "edit-gist"
+  (with-new-gist (gist)
+    (let ((description "changed")
+          (files (gist-files gist)))
+      (setf (gist-description gist) description)
+      (setf (file-content (car files)) nil)
+      (setf (gist-files gist) files)
+
+      (edit-gist gist)
+
+      (let ((new-gist (get-gist (gist-id gist))))
+        (is (gist-description new-gist)
+            description
+            "can change description.")
+
+        (is (gist-files new-gist)
+            nil
+            "can delete files."))
+
+      (setf (gist-files gist)
+            (list (make-file :name "new-file" :content "New content.")))
+
+      (edit-gist gist)
+
+      (let ((new-gist (get-gist (gist-id gist))))
+        (is-type (car (gist-files new-gist))
+                 'file
+                 "can add files."))
+
+      (let ((filename "changed-file")
+            (content "Changed content."))
+        (setf (gist-files gist)
+              (list (make-file :name filename :content content :old-name "new-file")))
+
+        (edit-gist gist)
+
+        (let* ((files (gist-files (get-gist (gist-id gist))))
+               (file (car files)))
+          (is (length files)
+              1
+              "can edit existing files.")
+
+          (is (file-name file)
+              filename
+              "can change name.")
+
+          (is (file-content file)
+              content
+              "can change content."))))))
+
 (subtest "list-gist-commits"
   (with-new-gist (gist)
     (is-type (car (list-gist-commits gist))
@@ -65,7 +115,6 @@
         "At first, the gist is not starred.")
 
     (star-gist gist)
-
     (ok (gist-starred-p gist)
         "can star the gist.")))
 
@@ -77,7 +126,6 @@
         "At first, the gist is starred.")
 
     (unstar-gist gist)
-
     (is (gist-starred-p gist)
         nil
         "can unstar the gist.")))
@@ -89,7 +137,6 @@
         "NIL.")
 
     (star-gist gist)
-
     (ok (gist-starred-p gist)
         "T.")))
 
@@ -99,7 +146,6 @@
     (is-type (get-gist (gist-id forked))
              'gist
              "can fork a gist.")
-
     (delete-gist forked)))
 
 (subtest "list-gist-forks"
@@ -109,7 +155,6 @@
     (is-type (car (list-gist-forks gist))
              'gist
              "can get list of fork gists.")
-
     (delete-gist forked)))
 
 (subtest "delete-gist"
@@ -118,9 +163,8 @@
         "At first, you can get the gist.")
 
     (delete-gist gist)
-
     (is-error (get-gist (gist-id gist))
               'error
-              "can delete gist.")))
+              "can delete the gist.")))
 
 (finalize)

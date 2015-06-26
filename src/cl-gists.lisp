@@ -36,7 +36,8 @@
                 :file-truncated
                 :file-language
                 :file-content
-                :file-old-name)
+                :file-old-name
+                :make-file)
   (:import-from :cl-gists.fork
                 :fork
                 :fork-user
@@ -125,6 +126,7 @@
            :file-language
            :file-content
            :file-old-name
+           :make-file
 
            ;; fork
            :fork
