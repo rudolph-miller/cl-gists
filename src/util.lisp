@@ -83,17 +83,21 @@
                      :timezone +utc-zone+))
 
 (defun request (uri &key method content ignore-statuses (credentials *credentials*))
-  (multiple-value-bind (body status) (dex:request (render-uri uri)
-                                                  :method method
-                                                  :content content
-                                                  :headers (when (oauth-token credentials)
-                                                             `(("Authorization" . ,(format nil "token ~a"
-                                                                                           (oauth-token credentials)))))
-                                                  :basic-auth (when (and (not (oauth-token credentials))
-                                                                         (username credentials)
-                                                                         (password credentials))
-                                                                (cons (username credentials)
-                                                                      (password credentials))))
+  (multiple-value-bind (body status)
+      (handler-bind ((dex:http-request-failed (lambda (c)
+                                                (declare (ignore c))
+                                                (invoke-restart 'dex:ignore-and-continue))))
+        (dex:request (render-uri uri)
+                     :method method
+                     :content content
+                     :headers (when (oauth-token credentials)
+                                `(("Authorization" . ,(format nil "token ~a"
+                                                              (oauth-token credentials)))))
+                     :basic-auth (when (and (not (oauth-token credentials))
+                                            (username credentials)
+                                            (password credentials))
+                                   (cons (username credentials)
+                                         (password credentials)))))
     (let ((string-body  (if (typep body 'string)
                             body
                             (octets-to-string body :encoding :utf-8))))
