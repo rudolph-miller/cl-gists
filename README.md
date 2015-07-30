@@ -1,5 +1,6 @@
 # Cl-Gists - Gists API Wrapper for Common Lisp.
 [![Build Status](https://circleci.com/gh/Rudolph-Miller/cl-gists.svg?style=shield)](https://circleci.com/gh/Rudolph-Miller/cl-gists)
+[![Quicklisp dist](http://quickdocs.org/badge/cl-gists.svg)](http://quickdocs.org/cl-gists/)
 
 ## API
 
