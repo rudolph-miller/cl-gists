@@ -35,7 +35,7 @@ dependencies:
 test:
   override:
     - ros run -- --version
-    - run-annot-prove *-test.asd
+    - run-annot-prove --with-prove t *-test.asd
 
 deployment:
   deployment:
