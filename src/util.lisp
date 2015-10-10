@@ -66,14 +66,14 @@
 (defgeneric password (credentials)
   (:method ((credentials t))
     (declare (ignore credentials))
-    (environment-variable *github-password-env-var*)))
+    (getenv *github-password-env-var*)))
 
 @doc
 "Return the OAuth token."
 (defgeneric oauth-token (credentials)
   (:method ((credentials t))
     (declare (ignore credentials))
-    (environment-variable *github-oauth-token-env-var*)))
+    (getenv *github-oauth-token-env-var*)))
 
 (defun format-timestring-for-api (timestamp)
   (format-timestring nil
