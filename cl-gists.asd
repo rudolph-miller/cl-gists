@@ -27,7 +27,7 @@
                :dexador
                :babel
                :jonathan
-               :osicat)
+               :uiop)
   :components ((:module "src"
                 :serial t
                 :components

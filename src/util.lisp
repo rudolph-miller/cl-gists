@@ -2,8 +2,8 @@
 (defpackage cl-gists.util
   (:use :cl
         :annot.doc)
-  (:import-from :osicat
-                :environment-variable)
+  (:import-from :uiop
+                :getenv)
   (:import-from :alexandria
                 :remove-from-plist)
   (:import-from :local-time
@@ -59,7 +59,7 @@
 (defgeneric username (credentials)
   (:method ((credentials t))
     (declare (ignore credentials))
-    (environment-variable *github-username-env-var*)))
+    (getenv *github-username-env-var*)))
 
 @doc
 "Return the password."
