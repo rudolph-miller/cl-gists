@@ -58,10 +58,11 @@
   (created-at nil :type (or null timestamp))
   (updated-at nil :type (or null timestamp))
   (forks nil :type list)
-  (history nil :type list))
+  (history nil :type list)
+  (truncated nil :type boolean))
 
 (defun make-gist (&key url forks-url commits-url id description public owner fork-of user files comments
-                    comments-url html-url git-pull-url git-push-url created-at updated-at forks history)
+                    comments-url html-url git-pull-url git-push-url created-at updated-at forks history truncated)
   (%make-gist :url url
               :forks-url forks-url
               :commits-url commits-url
@@ -80,7 +81,8 @@
               :created-at (and created-at (parse-timestring created-at))
               :updated-at (and updated-at (parse-timestring updated-at))
               :forks (make-forks forks)
-              :history (make-histories history)))
+              :history (make-histories history)
+              :truncated truncated))
 
 (defun make-gists (list)
   (mapcar #'(lambda (plist) (apply #'make-gist plist)) list))

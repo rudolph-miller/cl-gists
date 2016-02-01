@@ -134,7 +134,8 @@
       },
       \"committed_at\": \"2010-04-14T02:15:15Z\"
     }
-  ]
+  ],
+  \"truncated\": false
 }")
 
 (defvar *gists-json-string*
@@ -200,7 +201,8 @@
     \"git_pull_url\": \"https://gist.github.com/aa5a315d61ae9438b18d.git\",
     \"git_push_url\": \"https://gist.github.com/aa5a315d61ae9438b18d.git\",
     \"created_at\": \"2010-04-14T02:15:15Z\",
-    \"updated_at\": \"2011-06-20T11:34:15Z\"
+    \"updated_at\": \"2011-06-20T11:34:15Z\",
+    \"truncated\": false
   }]")
 
 (subtest "make-gist"
