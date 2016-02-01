@@ -47,8 +47,12 @@
 
 (defmacro test-gist (gist &key excludes)
   `(progn
-     (subtest "slots of gist"
-       (test-all-slots-bound-and-not-nil ,gist :excludes (append (list 'cl-gists.gist::user) ,excludes)))
+     (let ((excludes
+             (append (list 'cl-gists.gist::user
+                           'cl-gists.gist::truncated)
+                     ,excludes)))
+       (subtest "slots of gist"
+         (test-all-slots-bound-and-not-nil ,gist :excludes excludes)))
      (subtest "slots of owner"
        (test-user (gist-owner ,gist)))
      (subtest "slots of file"
