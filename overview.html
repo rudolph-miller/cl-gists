@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>
+  Overview &ndash; CL-GISTS
+</title>
+    <link rel="stylesheet" href="static/style.css"/>
+    
+  <link rel="stylesheet" href="static/highlight.css"/>
+  <script src="static/highlight.js"></script>
+  <style>
+   /* Highlight the current top-level TOC item, and hide the TOC of all other items */
+
+   .toc a[data-node="overview"] {
+       color: #AD3108;
+   }
+
+   .toc ol {
+       display: none;
+   }
+
+   .toc > ol {
+       display: block;
+   }
+
+   .toc li a[data-node="overview"] + ol {
+       display: block;
+   }
+
+   .toc li a[data-node="overview"] + ol li {
+       font-size: 16px;
+       margin: 0 10px;
+   }
+
+   .toc li a[active] + ol li:first-child {
+       margin-top: 5px;
+   }
+  </style>
+
+  </head>
+  <body>
+    
+  <h1 class="doc-title">CL-GISTS » Overview</h1>
+  <article id="article" data-section="overview">
+    <aside>
+      <ol class="toc"><li><a href="overview.html" data-node="overview">Overview</a><ol><li><a href="overview.html#description" data-node="description">Description</a></li><li><a href="overview.html#examples" data-node="examples">Examples</a><ol><li><a href="overview.html#1.-credentials" data-node="1.-credentials">1. credentials</a></li><li><a href="overview.html#2.-list-gists" data-node="2.-list-gists">2. list-gists</a></li><li><a href="overview.html#3.-get-gist" data-node="3.-get-gist">3. get-gist</a></li><li><a href="overview.html#4.-create-gist" data-node="4.-create-gist">4. create-gist</a></li><li><a href="overview.html#5.-edit-gist" data-node="5.-edit-gist">5. edit-gist</a></li><li><a href="overview.html#6.-list-gist-commits" data-node="6.-list-gist-commits">6. list-gist-commits</a></li><li><a href="overview.html#7.-star-gist" data-node="7.-star-gist">7. star-gist</a></li><li><a href="overview.html#8.-unstar-gist" data-node="8.-unstar-gist">8. unstar-gist</a></li><li><a href="overview.html#9.-gist-starred-p" data-node="9.-gist-starred-p">9. gist-starred-p</a></li><li><a href="overview.html#10.-list-gist-forks" data-node="10.-list-gist-forks">10. list-gist-forks</a></li><li><a href="overview.html#11.-delete-gist" data-node="11.-delete-gist">11. delete-gist</a></li></ol></li><li><a href="overview.html#source" data-node="source">Source</a></li><li><a href="overview.html#author" data-node="author">Author</a></li><li><a href="overview.html#licence" data-node="licence">Licence</a></li></ol></li><li><a href="globals.html" data-node="globals">Globals</a></li><li><a href="functions.html" data-node="functions">Functions</a></li><li><a href="gereric-functions.html" data-node="gereric-functions">Gereric Functions</a></li><li><a href="structures.html" data-node="structures">Structures</a></li></ol>
+    </aside>
+    <main class="codex-section">
+      <p>
+<a href="https://circleci.com/gh/Rudolph-Miller/cl-gists"><img src="https://circleci.com/gh/Rudolph-Miller/cl-gists.svg"/></a></p><p><a href="https://coveralls.io/repos/Rudolph-Miller/cl-gists"><img src="https://coveralls.io/repos/Rudolph-Miller/cl-gists/badge.svg"/></a>
+<a href="http://quickdocs.org/cl-gists/"><img src="http://quickdocs.org/badge/cl-gists.svg"/></a>
+</p><h1 id="description">Description</h1>
+Gists API Wrapper for Common Lisp.
+<p>
+</p><h1 id="examples">Examples</h1>
+<h2 id="1.-credentials">1. credentials</h2>
+<pre><code html:class="lisp">;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; By default, environment variables.
+
+*github-username-env-var*
+;; =&gt; &quot;GITHUB_USERNAME&quot;
+
+*github-password-env-var*
+;; =&gt; &quot;GITHUB_PASSWORD&quot;
+
+*github-oauth-token-env-var*
+;; =&gt; &quot;GITHUB_OAUTH_TOKEN&quot;
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; You can customize credential methods.
+
+(defclass github-credentials ()
+  ((username :initarg :username)
+   (password :initarg :password)
+   (oauth-token :initarg :oauth-token)))
+
+;; username and password
+
+(defmethod username ((obj github-credentials))
+  (slot-value obj 'username))
+
+(defmethod password ((obj github-credentials))
+  (slot-value obj 'password))
+
+(setq *credentials* (make-instance 'github-credentials
+                                   :username &quot;Rudolph-Miller&quot;
+                                   :password &quot;PASSWORD&quot;))
+
+;; oauth-token
+
+(defmethod oauth-token ((obj github-credentials))
+  (slot-value obj 'oauth-token))
+
+(setq *credentials* (make-instance 'github-credentials
+                                   :oauth-token &quot;OAUTHTOKEN&quot;))
+</code></pre>
+
+<h2 id="2.-list-gists">2. list-gists</h2>
+<pre><code html:class="lisp">(list-gists)
+;; =&gt; (#S(GIST ...) ...)
+
+(list-gists :public t)
+;; =&gt; (#S(GIST ...) ...)
+
+(list-gists :username &quot;Rudolph-Miller&quot;)
+;; =&gt; (#S(GIST ...) ...)
+
+(list-gists :since (local-time:today))
+;; =&gt; (#S(GIST ...) ...)
+</code></pre>
+
+<h2 id="3.-get-gist">3. get-gist</h2>
+<pre><code html:class="lisp">(get-gist &quot;gistid&quot;)
+;; =&gt; #S(GIST ...)
+
+(get-gist &quot;gistid&quot; :sha &quot;gistsha&quot;)
+;; =&gt; #S(GIST ...)
+</code></pre>
+
+<h2 id="4.-create-gist">4. create-gist</h2>
+<pre><code html:class="lisp">(let ((gist (make-gist :description &quot;sample&quot;
+                       :public t
+                       :files '((:name &quot;file1&quot; :content &quot;text1&quot;) (:name &quot;file2&quot; :content &quot;text2&quot;)))))
+  (create-gist gist))
+;; =&gt; #S(GIST ...)
+</code></pre>
+
+<h2 id="5.-edit-gist">5. edit-gist</h2>
+<pre><code html:class="lisp">(let* ((gist (create-gist
+              (make-gist :description &quot;sample&quot;
+                         :public t
+                         :files '((:name &quot;file1&quot; :content &quot;text1&quot;)
+                                  (:name &quot;file2&quot; :content &quot;text2&quot;)))))
+       (files (gist-files gist))
+       (file1 (car files))
+       (file2 (cadr files)))
+
+  ;; Change description.
+  (setf (gist-description gist) &quot;changed&quot;)
+
+  ;; Changed filename and content.
+  (setf (file-name file1) &quot;file3&quot;)
+  (setf (file-content file1) &quot;text3&quot;)
+
+  ;; Delete a file.
+  (setf (file-content file2) nil)
+
+  (setf (gist-files) (list file1 file2))
+
+  (edit-gist gist))
+;; =&gt; #S(GIST ...)
+</code></pre>
+
+<h2 id="6.-list-gist-commits">6. list-gist-commits</h2>
+<pre><code html:class="lisp">(let ((id &quot;gistid&quot;))
+  (list-gist-commits id))
+;; =&gt; (#S(HISTORY ...) ...)
+
+(let ((gist (get-gist &quot;gistid&quot;)))
+  (list-gist-commits gist))
+;; =&gt; (#S(HISTORY ...) ...)
+</code></pre>
+
+<h2 id="7.-star-gist">7. star-gist</h2>
+<pre><code html:class="lisp">(let ((id &quot;gistid&quot;))
+  (star-gist id))
+;; =&gt; T
+
+(let ((gist (git-gist &quot;gistid&quot;)))
+  (star-gist gist))
+;; =&gt; T
+</code></pre>
+
+<h2 id="8.-unstar-gist">8. unstar-gist</h2>
+<pre><code html:class="lisp">(let ((id &quot;gistid&quot;))
+  (unstar-gist id))
+;; =&gt; T
+
+(let ((gist (git-gist &quot;gistid&quot;)))
+  (unstar-gist gist))
+;; =&gt; T
+</code></pre>
+
+<h2 id="9.-gist-starred-p">9. gist-starred-p</h2>
+<pre><code html:class="lisp">(let ((id &quot;gistid&quot;))
+  (gist-starred-p id))
+;; =&gt; T or NIL
+
+(let ((gist (git-gist &quot;gistid&quot;)))
+  (gist-starred-p gist))
+;; =&gt; T or NIL
+</code></pre>
+
+<h2 id="10.-list-gist-forks">10. list-gist-forks</h2>
+<pre><code html:class="lisp">(let ((id &quot;gistid&quot;))
+  (list-gist-forks id))
+;; =&gt; (#S(GIST ...) ...)
+
+(let ((gist (git-gist &quot;gistid&quot;)))
+  (list-gist-forks gist))
+;; =&gt; (#S(GIST ...) ...)
+</code></pre>
+
+<h2 id="11.-delete-gist">11. delete-gist</h2>
+<pre><code html:class="lisp">(let ((id &quot;gistid&quot;))
+  (delete-gist id))
+;; =&gt; T
+
+(let ((gist (get-gist &quot;gistid&quot;)))
+  (delete-gist gist))
+;; =&gt; T
+</code></pre>
+
+<p>
+</p><h1 id="source">Source</h1>
+<a href="https://github.com/Rudolph-Miller/cl-gists">CL-GISTS</a>
+<p>
+</p><h1 id="author">Author</h1>
+<b>Rudolph Miller</b>
+<p>
+</p><h1 id="licence">Licence</h1>
+MIT
+<p>
+</p>
+    </main>
+  </article>
+  <footer>
+    <div class="info">
+      Created with <a href="https://github.com/CommonDoc/codex">Codex</a>.
+    </div>
+  </footer>
+  <script>
+   HighlightLisp.highlight_auto();
+  </script>
+
+  </body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>
+  Structures &ndash; CL-GISTS
+</title>
+    <link rel="stylesheet" href="static/style.css"/>
+    
+  <link rel="stylesheet" href="static/highlight.css"/>
+  <script src="static/highlight.js"></script>
+  <style>
+   /* Highlight the current top-level TOC item, and hide the TOC of all other items */
+
+   .toc a[data-node="structures"] {
+       color: #AD3108;
+   }
+
+   .toc ol {
+       display: none;
+   }
+
+   .toc > ol {
+       display: block;
+   }
+
+   .toc li a[data-node="structures"] + ol {
+       display: block;
+   }
+
+   .toc li a[data-node="structures"] + ol li {
+       font-size: 16px;
+       margin: 0 10px;
+   }
+
+   .toc li a[active] + ol li:first-child {
+       margin-top: 5px;
+   }
+  </style>
+
+  </head>
+  <body>
+    
+  <h1 class="doc-title">CL-GISTS » Structures</h1>
+  <article id="article" data-section="structures">
+    <aside>
+      <ol class="toc"><li><a href="overview.html" data-node="overview">Overview</a><ol><li><a href="overview.html#description" data-node="description">Description</a></li><li><a href="overview.html#examples" data-node="examples">Examples</a><ol><li><a href="overview.html#1.-credentials" data-node="1.-credentials">1. credentials</a></li><li><a href="overview.html#2.-list-gists" data-node="2.-list-gists">2. list-gists</a></li><li><a href="overview.html#3.-get-gist" data-node="3.-get-gist">3. get-gist</a></li><li><a href="overview.html#4.-create-gist" data-node="4.-create-gist">4. create-gist</a></li><li><a href="overview.html#5.-edit-gist" data-node="5.-edit-gist">5. edit-gist</a></li><li><a href="overview.html#6.-list-gist-commits" data-node="6.-list-gist-commits">6. list-gist-commits</a></li><li><a href="overview.html#7.-star-gist" data-node="7.-star-gist">7. star-gist</a></li><li><a href="overview.html#8.-unstar-gist" data-node="8.-unstar-gist">8. unstar-gist</a></li><li><a href="overview.html#9.-gist-starred-p" data-node="9.-gist-starred-p">9. gist-starred-p</a></li><li><a href="overview.html#10.-list-gist-forks" data-node="10.-list-gist-forks">10. list-gist-forks</a></li><li><a href="overview.html#11.-delete-gist" data-node="11.-delete-gist">11. delete-gist</a></li></ol></li><li><a href="overview.html#source" data-node="source">Source</a></li><li><a href="overview.html#author" data-node="author">Author</a></li><li><a href="overview.html#licence" data-node="licence">Licence</a></li></ol></li><li><a href="globals.html" data-node="globals">Globals</a></li><li><a href="functions.html" data-node="functions">Functions</a></li><li><a href="gereric-functions.html" data-node="gereric-functions">Gereric Functions</a></li><li><a href="structures.html" data-node="structures">Structures</a></li></ol>
+    </aside>
+    <main class="codex-section">
+      
+
+<div class="codex-doc-node codex-record codex-structure"><code class="codex-name">file</code><div class="codex-docstring">Structure of File.</div><ul class="codex-slot-list"><li class="codex-slot codex-structure-slot"><code class="codex-name">name</code></li><li class="codex-slot codex-structure-slot"><code class="codex-name">size</code></li><li class="codex-slot codex-structure-slot"><code class="codex-name">raw-url</code></li><li class="codex-slot codex-structure-slot"><code class="codex-name">type</code></li><li class="codex-slot codex-structure-slot"><code class="codex-name">truncated</code></li><li class="codex-slot codex-structure-slot"><code class="codex-name">language</code></li><li class="codex-slot codex-structure-slot"><code class="codex-name">content</code></li><li class="codex-slot codex-structure-slot"><code class="codex-name">old-name</code></li></ul></div>
+
+
+<div class="codex-doc-node codex-record codex-structure"><code class="codex-name">fork</code><div class="codex-docstring">Structure of Fork.</div><ul class="codex-slot-list"><li class="codex-slot codex-structure-slot"><code class="codex-name">user</code></li><li class="codex-slot codex-structure-slot"><code class="codex-name">url</code></li><li class="codex-slot codex-structure-slot"><code class="codex-name">id</code></li><li class="codex-slot codex-structure-slot"><code class="codex-name">created-at</code></li><li class="codex-slot codex-structure-slot"><code class="codex-name">updated-at</code></li></ul></div>
+
+
+<div class="codex-doc-node codex-record codex-structure"><code class="codex-name">gist</code><div class="codex-docstring">Structure of Gist</div><ul class="codex-slot-list"><li class="codex-slot codex-structure-slot"><code class="codex-name">url</code></li><li class="codex-slot codex-structure-slot"><code class="codex-name">forks-url</code></li><li class="codex-slot codex-structure-slot"><code class="codex-name">commits-url</code></li><li class="codex-slot codex-structure-slot"><code class="codex-name">id</code></li><li class="codex-slot codex-structure-slot"><code class="codex-name">description</code></li><li class="codex-slot codex-structure-slot"><code class="codex-name">public</code></li><li class="codex-slot codex-structure-slot"><code class="codex-name">owner</code></li><li class="codex-slot codex-structure-slot"><code class="codex-name">fork-of</code></li><li class="codex-slot codex-structure-slot"><code class="codex-name">user</code></li><li class="codex-slot codex-structure-slot"><code class="codex-name">files</code></li><li class="codex-slot codex-structure-slot"><code class="codex-name">comments</code></li><li class="codex-slot codex-structure-slot"><code class="codex-name">comments-url</code></li><li class="codex-slot codex-structure-slot"><code class="codex-name">html-url</code></li><li class="codex-slot codex-structure-slot"><code class="codex-name">git-pull-url</code></li><li class="codex-slot codex-structure-slot"><code class="codex-name">git-push-url</code></li><li class="codex-slot codex-structure-slot"><code class="codex-name">created-at</code></li><li class="codex-slot codex-structure-slot"><code class="codex-name">updated-at</code></li><li class="codex-slot codex-structure-slot"><code class="codex-name">forks</code></li><li class="codex-slot codex-structure-slot"><code class="codex-name">history</code></li><li class="codex-slot codex-structure-slot"><code class="codex-name">truncated</code></li></ul></div>
+
+
+<div class="codex-doc-node codex-record codex-structure"><code class="codex-name">history</code><div class="codex-docstring">Structure of History.</div><ul class="codex-slot-list"><li class="codex-slot codex-structure-slot"><code class="codex-name">url</code></li><li class="codex-slot codex-structure-slot"><code class="codex-name">version</code></li><li class="codex-slot codex-structure-slot"><code class="codex-name">user</code></li><li class="codex-slot codex-structure-slot"><code class="codex-name">deletions</code></li><li class="codex-slot codex-structure-slot"><code class="codex-name">additions</code></li><li class="codex-slot codex-structure-slot"><code class="codex-name">total</code></li><li class="codex-slot codex-structure-slot"><code class="codex-name">committed-at</code></li></ul></div>
+
+
+<div class="codex-doc-node codex-record codex-structure"><code class="codex-name">user</code><div class="codex-docstring">Structure of User.</div><ul class="codex-slot-list"><li class="codex-slot codex-structure-slot"><code class="codex-name">login</code></li><li class="codex-slot codex-structure-slot"><code class="codex-name">id</code></li><li class="codex-slot codex-structure-slot"><code class="codex-name">avatar-url</code></li><li class="codex-slot codex-structure-slot"><code class="codex-name">gravatar-id</code></li><li class="codex-slot codex-structure-slot"><code class="codex-name">url</code></li><li class="codex-slot codex-structure-slot"><code class="codex-name">html-url</code></li><li class="codex-slot codex-structure-slot"><code class="codex-name">followers-url</code></li><li class="codex-slot codex-structure-slot"><code class="codex-name">following-url</code></li><li class="codex-slot codex-structure-slot"><code class="codex-name">gists-url</code></li><li class="codex-slot codex-structure-slot"><code class="codex-name">starred-url</code></li><li class="codex-slot codex-structure-slot"><code class="codex-name">subscriptions-url</code></li><li class="codex-slot codex-structure-slot"><code class="codex-name">organizations-url</code></li><li class="codex-slot codex-structure-slot"><code class="codex-name">repos-url</code></li><li class="codex-slot codex-structure-slot"><code class="codex-name">events-url</code></li><li class="codex-slot codex-structure-slot"><code class="codex-name">received-events-url</code></li><li class="codex-slot codex-structure-slot"><code class="codex-name">type</code></li><li class="codex-slot codex-structure-slot"><code class="codex-name">site-admin</code></li></ul></div>
+
+
+    </main>
+  </article>
+  <footer>
+    <div class="info">
+      Created with <a href="https://github.com/CommonDoc/codex">Codex</a>.
+    </div>
+  </footer>
+  <script>
+   HighlightLisp.highlight_auto();
+  </script>
+
+  </body>
+</html>
