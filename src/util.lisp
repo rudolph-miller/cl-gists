@@ -83,7 +83,7 @@
                      :timezone +utc-zone+))
 
 (defun request (uri &key method content ignore-statuses (credentials *credentials*))
-  (multiple-value-bind (body status)
+  (multiple-value-bind (body status response-headers)
       (handler-bind ((dex:http-request-failed (lambda (c)
                                                 (declare (ignore c))
                                                 (invoke-restart 'dex:ignore-and-continue))))
@@ -102,10 +102,10 @@
                             body
                             (octets-to-string body :encoding :utf-8))))
       (cond
-        ((and (<= 200 status) (<= status 299))
-         (values string-body status))
+        ((<= 200 status 299)
+         (values string-body status response-headers))
         (t (if (and ignore-statuses (member status ignore-statuses))
-               (values string-body status)
+               (values string-body status response-headers)
                (error "URI: ~a~%Method: ~a~%Content: ~a~%Status: ~a~%Message: ~a~%"
                       uri
                       method
