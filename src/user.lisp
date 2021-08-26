@@ -44,4 +44,5 @@
   (events-url nil :type (or null string))
   (received-events-url nil :type (or null string))
   (type nil :type (or null string))
-  (site-admin nil :type boolean))
+  (site-admin nil :type boolean)
+  (node-id nil :type (or null string)))

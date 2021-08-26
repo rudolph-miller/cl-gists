@@ -1,6 +1,7 @@
 (in-package :cl-user)
 (defpackage cl-gists
   (:use :cl)
+  (:nicknames :gists)
   (:import-from :cl-gists.util
                 :*credentials*
                 :*github-username-env-var*
