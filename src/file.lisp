@@ -1,7 +1,10 @@
-(in-package :cl-user)
-(defpackage cl-gists.file
+;;; -*- Mode: LISP; Base: 10; Syntax: ANSI-Common-Lisp; Package: CL-USER -*-
+;;; Copyright (c) 2015 Rudolph Miller (chopsticks.tk.ppfm@gmail.com)
+;;; Copyright (c) 2023 by Symbolics Pte. Ltd. All rights reserved.
+;;; SPDX-License-identifier: MS-PL
+
+(uiop:define-package #:cl-gists.file
   (:use :cl
-        :annot.doc
         :cl-gists.util)
   (:import-from :alexandria
                 :remove-from-plist)
@@ -19,12 +22,9 @@
            :make-files))
 (in-package :cl-gists.file)
 
-(syntax:use-syntax :annot)
-
-@doc
-"Structure of File."
 (defstruct (file (:constructor make-file (&key name size raw-url type truncated language content old-name
                                           &aux (old-name (or old-name name)))))
+  "Structure of File."
   (name nil :type (or null string))
   (size nil :type (or null integer))
   (raw-url nil :type (or null string))

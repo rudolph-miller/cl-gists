@@ -1,7 +1,10 @@
-(in-package :cl-user)
-(defpackage cl-gists.fork
+;;; -*- Mode: LISP; Base: 10; Syntax: ANSI-Common-Lisp; Package: CL-USER -*-
+;;; Copyright (c) 2015 Rudolph Miller (chopsticks.tk.ppfm@gmail.com)
+;;; Copyright (c) 2023 by Symbolics Pte. Ltd. All rights reserved.
+;;; SPDX-License-identifier: MS-PL
+
+(uiop:define-package #:cl-gists.fork
   (:use :cl
-        :annot.doc
         :cl-gists.user)
   (:import-from :local-time
                 :timestamp
@@ -16,11 +19,9 @@
            :make-forks))
 (in-package :cl-gists.fork)
 
-(syntax:use-syntax :annot)
 
-@doc
-"Structure of Fork."
 (defstruct (fork (:constructor %make-fork))
+  "Structure of Fork."
   (user nil :type (or null user))
   (url nil :type (or null string))
   (id nil :type (or null string))

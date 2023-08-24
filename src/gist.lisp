@@ -1,7 +1,10 @@
-(in-package :cl-user)
-(defpackage cl-gists.gist
+;;; -*- Mode: LISP; Base: 10; Syntax: ANSI-Common-Lisp; Package: CL-USER -*-
+;;; Copyright (c) 2015 Rudolph Miller (chopsticks.tk.ppfm@gmail.com)
+;;; Copyright (c) 2023 by Symbolics Pte. Ltd. All rights reserved.
+;;; SPDX-License-identifier: MS-PL
+
+(uiop:define-package #:cl-gists.gist
   (:use :cl
-        :annot.doc
         :cl-gists.util
         :cl-gists.user
         :cl-gists.file
@@ -35,11 +38,9 @@
            :make-gists))
 (in-package :cl-gists.gist)
 
-(syntax:use-syntax :annot)
 
-@doc
-"Structure of Gist"
 (defstruct (gist (:constructor %make-gist))
+  "Structure of Gist"
   (url nil :type (or null string))
   (forks-url nil :type (or null string))
   (commits-url nil :type (or null string))

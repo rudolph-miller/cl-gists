@@ -1,7 +1,10 @@
-(in-package :cl-user)
-(defpackage cl-gists.util
-  (:use :cl
-        :annot.doc)
+;;; -*- Mode: LISP; Base: 10; Syntax: ANSI-Common-Lisp; Package: CL-USER -*-
+;;; Copyright (c) 2015 Rudolph Miller (chopsticks.tk.ppfm@gmail.com)
+;;; Copyright (c) 2023 by Symbolics Pte. Ltd. All rights reserved.
+;;; SPDX-License-identifier: MS-PL
+
+(uiop:define-package #:cl-gists.util
+  (:use :cl)
   (:import-from :uiop
                 :getenv)
   (:import-from :alexandria
@@ -34,43 +37,34 @@
            :parse-json))
 (in-package :cl-gists.util)
 
-(syntax:use-syntax :annot)
-
 (defvar *raw-keyword* "raw_")
 
-@doc
-"Global variable of credentials."
-(defvar *credentials* nil)
+(defvar *credentials* nil
+  "Global variable of credentials.")
 
-@doc
-"Environment variable for a username of GitHub."
-(defvar *github-username-env-var* "GITHUB_USERNAME")
+(defvar *github-username-env-var* "GITHUB_USERNAME"
+  "Environment variable for a username of GitHub.")
 
-@doc
-"Environment variable for a password of GitHub."
-(defvar *github-password-env-var* "GITHUB_PASSWORD")
+(defvar *github-password-env-var* "GITHUB_PASSWORD"
+  "Environment variable for a password of GitHub.")
 
-@doc
-"Environment variable for a OAuth token of GitHub."
-(defvar *github-oauth-token-env-var* "GITHUB_OAUTH_TOKEN")
+(defvar *github-oauth-token-env-var* "GITHUB_OAUTH_TOKEN"
+  "Environment variable for a OAuth token of GitHub."  )
 
-@doc
-"Return the username."
 (defgeneric username (credentials)
+  (:documentation "Return the username.")
   (:method ((credentials t))
     (declare (ignore credentials))
     (getenv *github-username-env-var*)))
 
-@doc
-"Return the password."
 (defgeneric password (credentials)
+  (:documentation "Return the password.")
   (:method ((credentials t))
     (declare (ignore credentials))
     (getenv *github-password-env-var*)))
 
-@doc
-"Return the OAuth token."
 (defgeneric oauth-token (credentials)
+  (:documentation "Return the OAuth token.")
   (:method ((credentials t))
     (declare (ignore credentials))
     (getenv *github-oauth-token-env-var*)))

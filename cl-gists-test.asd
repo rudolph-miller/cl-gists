@@ -1,10 +1,11 @@
-#|
-  This file is a part of cl-gists project.
-  Copyright (c) 2015 Rudolph Miller (chopsticks.tk.ppfm@gmail.com)
-|#
+;;; -*- Mode: LISP; Base: 10; Syntax: ANSI-Common-Lisp; Package: ASDF -*-
+;;; Copyright (c) 2015 Rudolph Miller (chopsticks.tk.ppfm@gmail.com)
+;;; Copyright (c) 2021-2023 by Symbolics Pte. Ltd. All rights reserved.
+;;; SPDX-License-identifier: MS-PL
 
 (defsystem "cl-gists-test"
   :author "Rudolph Miller"
+  :maintainer "Steve Nunez"
   :license "MIT"
   :homepage "https://github.com/Rudolph-Miller/cl-gists"
   :depends-on ("cl-gists"

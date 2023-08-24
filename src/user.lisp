@@ -1,7 +1,10 @@
-(in-package :cl-user)
-(defpackage cl-gists.user
-  (:use :cl
-        :annot.doc)
+;;; -*- Mode: LISP; Base: 10; Syntax: ANSI-Common-Lisp; Package: CL-USER -*-
+;;; Copyright (c) 2015 Rudolph Miller (chopsticks.tk.ppfm@gmail.com)
+;;; Copyright (c) 2023 by Symbolics Pte. Ltd. All rights reserved.
+;;; SPDX-License-identifier: MS-PL
+
+(uiop:define-package #:cl-gists.user
+  (:use :cl)
   (:export :cl-gists.user
            :user
            :user-login
@@ -21,13 +24,10 @@
            :user-type
            :user-site-admin
            :make-user))
-(in-package :cl-gists.user)
+(in-package #:cl-gists.user)
 
-(syntax:use-syntax :annot)
-
-@doc
-"Structure of User."
 (defstruct user
+  "Structure of User."
   (login nil :type (or null string))
   (id nil :type (or null integer))
   (avatar-url nil :type (or null string))
