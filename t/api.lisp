@@ -11,6 +11,9 @@
 (defvar *anonymous-gist-id* "dc6a799aa31b5f501d15")
 
 ;;; Various ways of listing gists
+;;; Note that these are dependent on the user running the test.  For
+;;; example if you have no starred gists, then the starred test will
+;;; fail.
 (deftest without-keywords (list)
   (let ((gist (car (list-gists))))
     (assert-true (typep gist 'gist)

@@ -16,7 +16,8 @@
                     (format nil "~a is not NIL." name)))))
 
 (defmacro test-user (user)
-  `(test-all-slots-bound-and-not-nil ,user :excludes (list 'cl-gists.user::site-admin)))
+  `(test-all-slots-bound-and-not-nil ,user :excludes (list 'cl-gists.user::site-admin
+							   'cl-gists.user::node-id)))
 
 (defmacro test-file (file)
   `(test-all-slots-bound-and-not-nil ,file :excludes (list 'cl-gists.file::truncated)))
