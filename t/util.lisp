@@ -14,14 +14,16 @@
 
 (deftest request (util)
 
-  ;; The following two tests are certain to fail on MS Windows.
+  ;; The following two tests are certain to fail on MS Windows.  I
+  ;; believe this is because, on Win32, dexador uses the WinHTTP
+  ;; library, which has different behaviour.
+
   ;; LS-USER> (type-of (dex:request (quri:uri "https://google.co.jp") :method :get))
   ;; (SIMPLE-ARRAY CHARACTER (19576))
   ;; LS-USER> (type-of (dex:request (quri:uri "https://api.github.com") :method :get))
   ;; (SIMPLE-ARRAY CHARACTER (2262))
   ;; LS-USER> (stringp *)
   ;; NIL
-  ;; I have left them here because they were in the original tests.
 
   #-win32
   (assert-true (typep (type-of (request (uri "https://google.co.jp") :method :get)) 'string)

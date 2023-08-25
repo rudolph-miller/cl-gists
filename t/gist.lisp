@@ -205,9 +205,11 @@
       "Can make-gist.")
     (test-gist gist)))
 
+;; This test returns inconsistent results in the NODE-ID slot
 (deftest make-gists (gist)
   (let ((gist (car (make-gists (parse-json *gists-json-string*)))))
     (assert-true (typep gist 'gist)
       "Can make-gists.")
+    ;; (test-gist gist :excludes '(cl-gists.gist::forks cl-gists.gist::history))))
     (test-gist gist :excludes '(cl-gists.gist::forks cl-gists.gist::history cl-gists.gist::node-id))))
 

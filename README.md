@@ -64,7 +64,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About the Project
 
-An interface to the github REST API.  This systems was originally developed developed by [Rudolph Miller](https://github.com/rudolph-miller/cl-gists) in 2015, however as of 2023 it has been abandoned for several years and no longer works with the current Github API.  This fork is for maintenance purposes.
+An interface to the github REST API.  This system was originally developed developed by [Rudolph Miller](https://github.com/rudolph-miller/cl-gists) in 2015, however as of 2023 it has been abandoned for several years and no longer works with the current Github API.  This fork is for maintenance purposes. See the [original documentation](https://rudolph-miller.github.io/cl-gists/overview.html) for more information.
 
 ### Built With
 
@@ -92,6 +92,14 @@ you can load `cl-gists` and all of its dependencies with:
 
 <!-- USAGE EXAMPLES -->
 ## Usage
+Set the following environment variables to hold your github credentials:
+
+* GITHUB_USERNAME
+* GITHUB_OAUTH_TOKEN
+
+Github no longer works with a password, so don't bother setting that.  If you want a custom scheme for authentication, you can create one by following the examples in `examples/1.credentials.lisp`
+
+
 ```lisp
 (let ((gist (make-gist :description "sample"
                        :public t
@@ -114,7 +122,11 @@ Distributed under the MS-PL License. See [LICENSE](LICENSE) for more information
 The [original version](https://github.com/rudolph-miller/cl-gists) is licensed under the MIT license.
 
 ## Notes
-The tests have been updated to work with the latest github API, however the tests need to authenticate to github using a particular user.  Some tests make assumptions about the contents of the users git repository.  For example the 'starred' tests checks that we can use the `:starred` keyword to `get-gists`, but if the user you're running the tests with doesn't have any starred gists then the test will fail.
+The tests have been updated to work with the latest github API, however there are some things to note:
+
+the tests need to authenticate to github using a particular user.  Some tests make assumptions about the contents of the users git repository.  For example the 'starred' tests checks that we can use the `:starred` keyword to `get-gists`, but if the user you're running the tests with doesn't have any starred gists then the test will fail.
+
+There are also some inconsistencies in test results depending on whether you repeat the tests.  Typically this shows up as "NODE-ID is/is not NIL.  On some runs this is returned by github, on others not, so the test results vary.
 
 
 <!-- CONTACT -->

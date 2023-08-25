@@ -49,17 +49,16 @@
 
     (let* ((gist (get-gist (gist-id target-gist)))
            (version (history-version (car (gist-history gist)))))
-    (assert-true (typep (get-gist (gist-id gist) :sha version)
-			'gist)
-      "With :sha"))))
+      (assert-true (typep (get-gist (gist-id gist) :sha version)
+			  'gist)
+	"With :sha"))))
 
 (deftest create-gist (api)
   (let ((gist (create-gist (make-gist :description "sample"
 				      :public t
 				      :files (list (list :name "sample" :content "Sample."))))))
     (assert-true (get-gist (gist-id gist))
-        "Can create a gist")
-
+      "Can create a gist")
     (delete-gist gist)))
 
 (defmacro with-new-gist ((var) &body body)
@@ -85,34 +84,31 @@
 	(assert-equal (gist-files new-gist) nil
           "Files can be deleted")
 
-      (setf (gist-files gist)
-            (list (make-file :name "new-file" :content "New content.")))
+	(setf (gist-files gist)
+              (list (make-file :name "new-file" :content "New content.")))
+	(edit-gist gist)
+	(sleep 5)
 
-      (edit-gist gist)
+	(let ((new-gist (get-gist (gist-id gist))))
+	  (assert-true (typep (car (gist-files new-gist)) 'file)
+	    "Can add files"))
 
-      (sleep 5)
+	(let ((filename "changed-file")
+              (content "Changed content."))
 
-      (let ((new-gist (get-gist (gist-id gist))))
-	(assert-true (typep (car (gist-files new-gist)) 'file)
-	  "Can add files"))
+          (setf (gist-files gist)
+		(list (make-file :name filename :content content :old-name "new-file")))
+          (edit-gist gist)
+          (sleep 5)
 
-      (let ((filename "changed-file")
-            (content "Changed content."))
-        (setf (gist-files gist)
-              (list (make-file :name filename :content content :old-name "new-file")))
+          (let* ((files (gist-files (get-gist (gist-id gist))))
+		 (file (car files)))
 
-        (edit-gist gist)
-
-        (sleep 5)
-
-        (let* ((files (gist-files (get-gist (gist-id gist))))
-               (file (car files)))
-
-	  (assert-true (= (length files) 1)
+	    (assert-true (= (length files) 1)
               "can edit existing files.")
-	  (assert-true (string= (file-name file) filename)
+	    (assert-true (string= (file-name file) filename)
               "can change name.")
-	  (assert-true (string= (file-content file) content)
+	    (assert-true (string= (file-content file) content)
               "can change content.")))))))
 
 
@@ -150,7 +146,7 @@
   (let* ((gist (get-gist *anonymous-gist-id*))
          (forked (fork-gist gist)))
     (assert-true (typep (get-gist (gist-id forked)) 'gist)
-             "can fork a gist.")
+      "can fork a gist.")
     (delete-gist forked)))
 
 (deftest list-gist-forks (api)
@@ -163,7 +159,7 @@
 (deftest delete-gist (api)
   (let ((gist (create-gist (make-gist :description "sample" :public t :files (list (list :name "sample" :content "Sample."))))))
     (assert-true (get-gist (gist-id gist))
-    (delete-gist gist)
-    (assert-condition error (get-gist (gist-id gist))
-      "Can delete the gist"))))
+      (delete-gist gist)
+      (assert-condition error (get-gist (gist-id gist))
+	"Can delete the gist"))))
 

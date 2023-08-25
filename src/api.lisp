@@ -7,7 +7,6 @@
 
 (uiop:define-package #:cl-gists.api
   (:use :cl
-        :annot.doc
         :quri
         :cl-gists.util
         :cl-gists.user
@@ -18,8 +17,8 @@
   (:import-from :local-time
                 :timestamp
                 :format-timestring)
-  (:import-from :jonathan
-                :to-json)
+  (:import-from :yason
+                :encode-alist)
   (:export :list-gists
            :get-gist
            :create-gist
@@ -79,13 +78,15 @@ Note: Don't name your files "gistfile" with a numerical suffix. This is the form
 (defun create-gist (gist)
   "Create a gist."
   (check-type gist gist)
-  (let ((uri (uri (format nil "~a/gists" +api-base-uri+)))
-        (content (to-json `(("description" . ,(gist-description gist))
-                            ("public" . ,(gist-public gist))
-                            ("files" . ,(loop for file in (gist-files gist)
-                                              collecting (cons (file-name file)
-                                                               `(("content" . ,(file-content file)))))))
-                          :from :alist)))
+  (let* ((uri (uri (format nil "~a/gists" +api-base-uri+)))
+	 (yason:*list-encoder* 'yason:encode-alist)
+         (content (with-output-to-string (s)
+		    (encode `(("description" . ,(gist-description gist))
+			      ("public" . ,(gist-public gist))
+			      ("files" . ,(loop for file in (gist-files gist)
+						collecting (cons (file-name file)
+								 `(("content" . ,(file-content file)))))))
+			    s))))
     (apply #'make-gist (parse-json (post-request uri :content content)))))
 
 #|
@@ -96,15 +97,17 @@ Task: auth
   (check-type gist gist)
   (check-credentials)
   (if (gist-id gist)
-      (let ((uri (uri (format nil "~a/gists/~a" +api-base-uri+ (gist-id gist))))
-            (content (to-json `(("description" . ,(gist-description gist))
-                                ("files" . ,(loop for file in (gist-files gist)
-                                                  collecting (cons (or (file-old-name file) (file-name file))
-                                                                   (if (file-content file)
-                                                                       `(("content" . ,(file-content file))
-                                                                         ("filename" . ,(file-name file)))
-                                                                       :null)))))
-                              :from :alist)))
+      (let* ((uri (uri (format nil "~a/gists/~a" +api-base-uri+ (gist-id gist))))
+	     (yason:*list-encoder* 'yason:encode-alist)
+             (content (with-output-to-string (s)
+			(encode `(("description" . ,(gist-description gist))
+                                  ("files" . ,(loop for file in (gist-files gist)
+						    collecting (cons (or (file-old-name file) (file-name file))
+								     (if (file-content file)
+									 `(("content" . ,(file-content file))
+                                                                           ("filename" . ,(file-name file)))
+									 :null)))))
+				s))))
         (apply #'make-gist (parse-json (patch-request uri :content content))))
       (error "No id bound.")))
 

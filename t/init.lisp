@@ -11,9 +11,9 @@
          do (assert-true (slot-boundp ,obj name))
             (if (find name ,excludes)
                 (assert-equal (slot-value ,obj name) nil
-                    (format nil "~a is NIL." name))
+                  (format nil "~a is NIL." name))
                 (assert-true (slot-value ,obj name)
-                    (format nil "~a is not NIL." name)))))
+                  (format nil "~a is not NIL." name)))))
 
 (defmacro test-user (user)
   `(test-all-slots-bound-and-not-nil ,user :excludes (list 'cl-gists.user::site-admin

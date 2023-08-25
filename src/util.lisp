@@ -7,8 +7,9 @@
   (:use :cl)
   (:import-from :uiop
                 :getenv)
-  (:import-from :alexandria
-                :remove-from-plist)
+  (:import-from #:alexandria
+		#:remove-from-plist
+		#:make-keyword)
   (:import-from :local-time
                 :format-timestring
                 :+utc-zone+)
@@ -16,9 +17,8 @@
                 :render-uri)
   (:import-from :babel
                 :octets-to-string)
-  (:import-from :trivial-types
-                :property-list-p)
-  (:import-from :jonathan
+  (:import-from #:alexandria+ #:plistp)
+  (:import-from :yason
                 :parse)
   (:export :*credentials*
            :*github-username-env-var*
@@ -124,7 +124,8 @@
 
 (defun parse-json (json)
   (flet ((lispify (key)
-           (string-upcase (substitute #\- #\_ key)))
+	   (unless (string= key "FILES")
+             (make-keyword (string-upcase (substitute #\- #\_ key)))))
          (format-files (plist)
            (when (getf plist :files)
              (setf (getf plist :files)
@@ -133,10 +134,8 @@
                          collecting (append (list :name filename)
                                             (remove-from-plist value-plist :filename)))))
            plist))
-    (let ((parsed (parse json
-                         :keyword-normalizer #'lispify
-                         :normalize-all t
-                         :exclude-normalize-keys '("FILES"))))
+    (let* ((parsed (parse json :object-as :plist :object-key-fn #'lispify)))
       (if (property-list-p parsed)
           (format-files parsed)
           (mapcar #'format-files parsed)))))
+

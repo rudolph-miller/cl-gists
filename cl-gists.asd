@@ -3,19 +3,19 @@
 ;;; Copyright (c) 2023 by Symbolics Pte. Ltd. All rights reserved.
 ;;; SPDX-License-identifier: MS-PL
 
-(defsystem :#cl-gists
+(defsystem #:cl-gists
   :version "0.2.0"
   :author "Rudolph Miller"
   :maintainer "Steve Nunez"
   :license :MS-PL
   :homepage "https://github.com/Symbolics/cl-gists"
   :depends-on ("alexandria"
+	       "alexandria+"
                "local-time"
-               "trivial-types"
                "quri"
                "dexador"
                "babel"
-               "jonathan")
+               "yason")
   :components ((:module "src"
                 :serial t
                 :components
