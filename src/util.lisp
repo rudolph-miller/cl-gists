@@ -135,7 +135,7 @@
                                             (remove-from-plist value-plist :filename)))))
            plist))
     (let* ((parsed (parse json :object-as :plist :object-key-fn #'lispify)))
-      (if (property-list-p parsed)
+      (if (plistp parsed)
           (format-files parsed)
           (mapcar #'format-files parsed)))))
 

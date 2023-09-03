@@ -3,8 +3,6 @@
 ;;; Copyright (c) 2023 by Symbolics Pte. Ltd. All rights reserved.
 ;;; SPDX-License-identifier: MS-PL
 
-(in-package #:cl-user)
-
 (uiop:define-package #:cl-gists.api
   (:use :cl
         :quri
@@ -18,7 +16,7 @@
                 :timestamp
                 :format-timestring)
   (:import-from :yason
-                :encode-alist)
+                :encode)
   (:export :list-gists
            :get-gist
            :create-gist

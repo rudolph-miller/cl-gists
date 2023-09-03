@@ -4,7 +4,7 @@
 ;;; SPDX-License-identifier: MS-PL
 
 (defsystem #:cl-gists
-  :version "0.2.0"
+  :version "0.2.1"
   :author "Rudolph Miller"
   :maintainer "Steve Nunez"
   :license :MS-PL
