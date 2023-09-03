@@ -1,11 +1,15 @@
-(in-package :cl-user)
-(defpackage cl-gists.util
-  (:use :cl
-        :annot.doc)
+;;; -*- Mode: LISP; Base: 10; Syntax: ANSI-Common-Lisp; Package: CL-USER -*-
+;;; Copyright (c) 2015 Rudolph Miller (chopsticks.tk.ppfm@gmail.com)
+;;; Copyright (c) 2023 by Symbolics Pte. Ltd. All rights reserved.
+;;; SPDX-License-identifier: MS-PL
+
+(uiop:define-package #:cl-gists.util
+  (:use :cl)
   (:import-from :uiop
                 :getenv)
-  (:import-from :alexandria
-                :remove-from-plist)
+  (:import-from #:alexandria
+		#:remove-from-plist
+		#:make-keyword)
   (:import-from :local-time
                 :format-timestring
                 :+utc-zone+)
@@ -13,9 +17,8 @@
                 :render-uri)
   (:import-from :babel
                 :octets-to-string)
-  (:import-from :trivial-types
-                :property-list-p)
-  (:import-from :jonathan
+  (:import-from #:alexandria+ #:plistp)
+  (:import-from :yason
                 :parse)
   (:export :*credentials*
            :*github-username-env-var*
@@ -34,43 +37,34 @@
            :parse-json))
 (in-package :cl-gists.util)
 
-(syntax:use-syntax :annot)
-
 (defvar *raw-keyword* "raw_")
 
-@doc
-"Global variable of credentials."
-(defvar *credentials* nil)
+(defvar *credentials* nil
+  "Global variable of credentials.")
 
-@doc
-"Environment variable for a username of GitHub."
-(defvar *github-username-env-var* "GITHUB_USERNAME")
+(defvar *github-username-env-var* "GITHUB_USERNAME"
+  "Environment variable for a username of GitHub.")
 
-@doc
-"Environment variable for a password of GitHub."
-(defvar *github-password-env-var* "GITHUB_PASSWORD")
+(defvar *github-password-env-var* "GITHUB_PASSWORD"
+  "Environment variable for a password of GitHub.")
 
-@doc
-"Environment variable for a OAuth token of GitHub."
-(defvar *github-oauth-token-env-var* "GITHUB_OAUTH_TOKEN")
+(defvar *github-oauth-token-env-var* "GITHUB_OAUTH_TOKEN"
+  "Environment variable for a OAuth token of GitHub."  )
 
-@doc
-"Return the username."
 (defgeneric username (credentials)
+  (:documentation "Return the username.")
   (:method ((credentials t))
     (declare (ignore credentials))
     (getenv *github-username-env-var*)))
 
-@doc
-"Return the password."
 (defgeneric password (credentials)
+  (:documentation "Return the password.")
   (:method ((credentials t))
     (declare (ignore credentials))
     (getenv *github-password-env-var*)))
 
-@doc
-"Return the OAuth token."
 (defgeneric oauth-token (credentials)
+  (:documentation "Return the OAuth token.")
   (:method ((credentials t))
     (declare (ignore credentials))
     (getenv *github-oauth-token-env-var*)))
@@ -130,7 +124,8 @@
 
 (defun parse-json (json)
   (flet ((lispify (key)
-           (string-upcase (substitute #\- #\_ key)))
+	   (unless (string= key "FILES")
+             (make-keyword (string-upcase (substitute #\- #\_ key)))))
          (format-files (plist)
            (when (getf plist :files)
              (setf (getf plist :files)
@@ -139,10 +134,8 @@
                          collecting (append (list :name filename)
                                             (remove-from-plist value-plist :filename)))))
            plist))
-    (let ((parsed (parse json
-                         :keyword-normalizer #'lispify
-                         :normalize-all t
-                         :exclude-normalize-keys '("FILES"))))
-      (if (property-list-p parsed)
+    (let* ((parsed (parse json :object-as :plist :object-key-fn #'lispify)))
+      (if (plistp parsed)
           (format-files parsed)
           (mapcar #'format-files parsed)))))
+

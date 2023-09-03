@@ -1,7 +1,10 @@
-(in-package :cl-user)
-(defpackage cl-gists.gist
+;;; -*- Mode: LISP; Base: 10; Syntax: ANSI-Common-Lisp; Package: CL-USER -*-
+;;; Copyright (c) 2015 Rudolph Miller (chopsticks.tk.ppfm@gmail.com)
+;;; Copyright (c) 2023 by Symbolics Pte. Ltd. All rights reserved.
+;;; SPDX-License-identifier: MS-PL
+
+(uiop:define-package #:cl-gists.gist
   (:use :cl
-        :annot.doc
         :cl-gists.util
         :cl-gists.user
         :cl-gists.file
@@ -35,11 +38,9 @@
            :make-gists))
 (in-package :cl-gists.gist)
 
-(syntax:use-syntax :annot)
 
-@doc
-"Structure of Gist"
 (defstruct (gist (:constructor %make-gist))
+  "Structure of Gist"
   (url nil :type (or null string))
   (forks-url nil :type (or null string))
   (commits-url nil :type (or null string))
@@ -59,10 +60,12 @@
   (updated-at nil :type (or null timestamp))
   (forks nil :type list)
   (history nil :type list)
-  (truncated nil :type boolean))
+  (truncated nil :type boolean)
+  (node-id nil :type (or null string)))
 
 (defun make-gist (&key url forks-url commits-url id description public owner fork-of user files comments
-                    comments-url html-url git-pull-url git-push-url created-at updated-at forks history truncated)
+                    comments-url html-url git-pull-url git-push-url created-at updated-at forks history truncated
+		    node-id)
   (%make-gist :url url
               :forks-url forks-url
               :commits-url commits-url
@@ -82,7 +85,8 @@
               :updated-at (and updated-at (parse-timestring updated-at))
               :forks (make-forks forks)
               :history (make-histories history)
-              :truncated truncated))
+              :truncated truncated
+	      :node-id node-id))
 
 (defun make-gists (list)
   (mapcar #'(lambda (plist) (apply #'make-gist plist)) list))

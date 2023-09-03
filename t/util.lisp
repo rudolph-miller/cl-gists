@@ -1,31 +1,37 @@
-(in-package :cl-user)
-(defpackage cl-gists-test.util
-  (:use :cl
-        :prove
-        :local-time
-        :quri
-        :cl-gists-test.init
-        :cl-gists.util))
-(in-package :cl-gists-test.util)
+;;; -*- Mode: LISP; Base: 10; Syntax: ANSI-Common-Lisp; Package: CL-GIST-TEST -*-
+;;; Copyright (c) 2015 Rudolph Miller (chopsticks.tk.ppfm@gmail.com)
+;;; Copyright (c) 2021-2023 by Symbolics Pte. Ltd. All rights reserved.
+;;; SPDX-License-identifier: MS-PL
 
-(plan nil)
+(in-package #:cl-gists-test)
 
-(subtest "format-timestring-for-api"
-  (is (format-timestring-for-api (mytoday))
-      "2014-12-31T12:00:00Z"
-      "can format timestamp."))
+(defsuite util (gists))
 
-(subtest "request"
-  (is-type (request (uri "https://google.co.jp") :method :get)
-           'string
-           "string.")
+(deftest format-timestring-for-api (util)
+  (assert-true (string= (format-timestring-for-api (mytoday))
+			"2014-12-31T12:00:00Z")
+    "Can format timestamp."))
 
-  (is-type (request (uri "https://api.github.com") :method :get)
-           'string
-           "octets.")
+(deftest request (util)
 
-  (is-error (request (uri "https://api.github.com1") :method :get)
-            'error
-            "error."))
+  ;; The following two tests are certain to fail on MS Windows.  I
+  ;; believe this is because, on Win32, dexador uses the WinHTTP
+  ;; library, which has different behaviour.
 
-(finalize)
+  ;; LS-USER> (type-of (dex:request (quri:uri "https://google.co.jp") :method :get))
+  ;; (SIMPLE-ARRAY CHARACTER (19576))
+  ;; LS-USER> (type-of (dex:request (quri:uri "https://api.github.com") :method :get))
+  ;; (SIMPLE-ARRAY CHARACTER (2262))
+  ;; LS-USER> (stringp *)
+  ;; NIL
+
+  #-win32
+  (assert-true (typep (type-of (request (uri "https://google.co.jp") :method :get)) 'string)
+    "String returned from HTTP request")
+  #-win32
+  (assert-true (typep (type-of (request (uri "https://api.github.com") :method :get)) 'string)
+    "Octets returned from HTTP request")
+
+  (assert-condition error (request (uri "https://api.github.com1") :method :get)
+    "Error because host not found."))
+

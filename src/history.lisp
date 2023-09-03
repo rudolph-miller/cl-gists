@@ -1,7 +1,10 @@
-(in-package :cl-user)
-(defpackage cl-gists.history
+;;; -*- Mode: LISP; Base: 10; Syntax: ANSI-Common-Lisp; Package: CL-USER -*-
+;;; Copyright (c) 2015 Rudolph Miller (chopsticks.tk.ppfm@gmail.com)
+;;; Copyright (c) 2023 by Symbolics Pte. Ltd. All rights reserved.
+;;; SPDX-License-identifier: MS-PL
+
+(uiop:define-package #:cl-gists.history
   (:use :cl
-        :annot.doc
         :cl-gists.util
         :cl-gists.user)
   (:import-from :local-time
@@ -21,11 +24,8 @@
            :make-histories))
 (in-package :cl-gists.history)
 
-(syntax:use-syntax :annot)
-
-@doc
-"Structure of History."
 (defstruct (history (:constructor %make-history))
+  "Structure of History."
   (url nil :type (or null string))
   (version nil :type (or null string))
   (user nil :type (or null user))

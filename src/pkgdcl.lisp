@@ -1,6 +1,11 @@
-(in-package :cl-user)
-(defpackage cl-gists
+;;; -*- Mode: LISP; Base: 10; Syntax: ANSI-Common-Lisp; Package: CL-USER -*-
+;;; Copyright (c) 2015 Rudolph Miller (chopsticks.tk.ppfm@gmail.com)
+;;; Copyright (c) 2023 by Symbolics Pte. Ltd. All rights reserved.
+;;; SPDX-License-identifier: MS-PL
+
+(uiop:define-package #:cl-gists
   (:use :cl)
+  (:nicknames :gists)
   (:import-from :cl-gists.util
                 :*credentials*
                 :*github-username-env-var*
@@ -181,4 +186,4 @@
            :fork-gist
            :list-gist-forks
            :delete-gist))
-(in-package :cl-gists)
+

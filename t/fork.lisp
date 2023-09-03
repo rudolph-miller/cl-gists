@@ -1,17 +1,11 @@
-(in-package :cl-user)
-(defpackage cl-gists-test.fork
-  (:use :cl
-        :prove
-        :cl-gists-test.init
-        :cl-gists)
-  (:import-from :cl-gists.util
-                :parse-json)
-  (:import-from :cl-gists.fork
-                :make-fork
-                :make-forks))
-(in-package :cl-gists-test.fork)
+;;; -*- Mode: LISP; Base: 10; Syntax: ANSI-Common-Lisp; Package: CL-GISTS-TEST -*-
+;;; Copyright (c) 2015 Rudolph Miller (chopsticks.tk.ppfm@gmail.com)
+;;; Copyright (c) 2021-2023 by Symbolics Pte. Ltd. All rights reserved.
+;;; SPDX-License-identifier: MS-PL
 
-(plan nil)
+(in-package #:cl-gists-test)
+
+(defsuite fork (gists))
 
 (defvar *forks-json-string*
   "[{
@@ -40,7 +34,7 @@
      \"updated_at\": \"2011-04-14T16:00:49Z\"
    }]")
 
-(subtest "fork"
+(deftest make-fork (fork)
   (let ((fork (make-fork :user '(:login "octocat"
                                  :id 1
                                  :avatar-url "https://github.com/images/error/octocat_happy.gif"
@@ -62,18 +56,14 @@
                          :id "dee9c42e4998ce2ea439"
                          :created-at "2010-04-14T02:15:15Z"
                          :updated-at "2011-06-20T11:34:15Z")))
-    (is-type fork
-             'fork
-             "can make-fork.")
 
+    ;; Why is the return type being tested?  What else could be returned from make-fork?
+    (assert-true (typep fork 'fork)
+      "Can make-fork.")
     (test-fork fork)))
 
-(subtest "make-forks"
+(deftest make-forks (fork)
   (let ((fork (car (make-forks (parse-json *forks-json-string*)))))
-    (is-type fork
-             'fork
-             "can make-forks.")
-
+    (assert-true (typep fork 'fork)
+      "Can make-forks.")
     (test-fork fork)))
-
-(finalize)

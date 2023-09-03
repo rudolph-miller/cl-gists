@@ -1,50 +1,64 @@
-(in-package :cl-user)
-(defpackage cl-gists-test.api
-  (:use :cl
-        :prove
-        :cl-gists-test.init
-        :cl-gists))
-(in-package :cl-gists-test.api)
+;;; -*- Mode: LISP; Base: 10; Syntax: ANSI-Common-Lisp; Package: CL-GISTS-TEST -*-
+;;; Copyright (c) 2015 Rudolph Miller (chopsticks.tk.ppfm@gmail.com)
+;;; Copyright (c) 2021-2023 by Symbolics Pte. Ltd. All rights reserved.
+;;; SPDX-License-identifier: MS-PL
 
-(plan nil)
+(in-package #:cl-gists-test)
+
+(defsuite api (gists))
+(defsuite list (api))
 
 (defvar *anonymous-gist-id* "dc6a799aa31b5f501d15")
 
-(subtest "list-gists"
-  (macrolet ((list-gists-test (args comment)
-               `(subtest ,comment
-                  (let ((gist (car (list-gists ,@args))))
-                    (is-type gist
-                             'gist
-                             "can get list of gists.")))))
+;;; Various ways of listing gists
+;;; Note that these are dependent on the user running the test.  For
+;;; example if you have no starred gists, then the starred test will
+;;; fail.
+(deftest without-keywords (list)
+  (let ((gist (car (list-gists))))
+    (assert-true (typep gist 'gist)
+      "Can get a list of gists.")))
 
-    (list-gists-test nil "without keywords.")
+(deftest username (list)
+  (let ((gist (car (list-gists :username "Symbolics"))))
+    (assert-true (typep gist 'gist)
+      "Can get a list of gists by username")))
 
-    (list-gists-test (:username "Rudolph-Miller") ":username.")
+(deftest public (list)
+  (let ((gist (car (list-gists :public t))))
+    (assert-true (typep gist 'gist)
+      "Can get a list of gists that are public")))
 
-    (list-gists-test (:public t) ":public.")
+(deftest starred (list)
+  (let ((gist (car (list-gists :starred t))))
+    (assert-true (typep gist 'gist)
+      "Can get a list of gists that are starred")))
 
-    (list-gists-test (:starred t) ":starred.")
+(deftest since (list)
+  (let ((gist (car (list-gists :since (mytoday)))))
+    (assert-true (typep gist 'gist)
+      "Can get a list of gists since a particular date")))
 
-    (list-gists-test (:since (mytoday)) ":since.")))
 
-(subtest "get-gist"
+;;; Regular API calls
+(deftest get-gist (api)
   (let ((target-gist (car (list-gists))))
-    (is-type (get-gist (gist-id target-gist))
-             'gist
-             "without :sha.")
+    (assert-true (typep (get-gist (gist-id target-gist))
+			'gist)
+      "Without :sha")
 
     (let* ((gist (get-gist (gist-id target-gist)))
            (version (history-version (car (gist-history gist)))))
-      (is-type (get-gist (gist-id gist) :sha version)
-               'gist
-               "with :sha."))))
+      (assert-true (typep (get-gist (gist-id gist) :sha version)
+			  'gist)
+	"With :sha"))))
 
-(subtest "create-gist"
-  (let ((gist (create-gist (make-gist :description "sample" :public t :files (list (list :name "sample" :content "Sample."))))))
-    (ok (get-gist (gist-id gist))
-        "can create a gist.")
-
+(deftest create-gist (api)
+  (let ((gist (create-gist (make-gist :description "sample"
+				      :public t
+				      :files (list (list :name "sample" :content "Sample."))))))
+    (assert-true (get-gist (gist-id gist))
+      "Can create a gist")
     (delete-gist gist)))
 
 (defmacro with-new-gist ((var) &body body)
@@ -52,7 +66,7 @@
      ,@body
      (ignore-errors (delete-gist (gist-id ,var)))))
 
-(subtest "edit-gist"
+(deftest edit-gist (api)
   (with-new-gist (gist)
     (let ((description "changed")
           (files (gist-files gist)))
@@ -65,112 +79,87 @@
       (sleep 5)
 
       (let ((new-gist (get-gist (gist-id gist))))
-        (is (gist-description new-gist)
-            description
-            "can change description.")
+	(assert-true (string= (gist-description new-gist) description)
+	  "Description can be edited")
+	(assert-equal (gist-files new-gist) nil
+          "Files can be deleted")
 
-        (is (gist-files new-gist)
-            nil
-            "can delete files."))
+	(setf (gist-files gist)
+              (list (make-file :name "new-file" :content "New content.")))
+	(edit-gist gist)
+	(sleep 5)
 
-      (setf (gist-files gist)
-            (list (make-file :name "new-file" :content "New content.")))
+	(let ((new-gist (get-gist (gist-id gist))))
+	  (assert-true (typep (car (gist-files new-gist)) 'file)
+	    "Can add files"))
 
-      (edit-gist gist)
+	(let ((filename "changed-file")
+              (content "Changed content."))
 
-      (sleep 5)
+          (setf (gist-files gist)
+		(list (make-file :name filename :content content :old-name "new-file")))
+          (edit-gist gist)
+          (sleep 5)
 
-      (let ((new-gist (get-gist (gist-id gist))))
-        (is-type (car (gist-files new-gist))
-                 'file
-                 "can add files."))
+          (let* ((files (gist-files (get-gist (gist-id gist))))
+		 (file (car files)))
 
-      (let ((filename "changed-file")
-            (content "Changed content."))
-        (setf (gist-files gist)
-              (list (make-file :name filename :content content :old-name "new-file")))
-
-        (edit-gist gist)
-
-        (sleep 5)
-
-        (let* ((files (gist-files (get-gist (gist-id gist))))
-               (file (car files)))
-          (is (length files)
-              1
+	    (assert-true (= (length files) 1)
               "can edit existing files.")
-
-          (is (file-name file)
-              filename
+	    (assert-true (string= (file-name file) filename)
               "can change name.")
+	    (assert-true (string= (file-content file) content)
+              "can change content.")))))))
 
-          (is (file-content file)
-              content
-              "can change content."))))))
 
-(subtest "list-gist-commits"
+(deftest list-gist-commits (api)
   (with-new-gist (gist)
-    (is-type (car (list-gist-commits gist))
-             'history
-             "can git list of gist-commits.")))
+    (assert-true (typep (car (list-gist-commits gist)) 'history)
+      "Can git list of gist-commits")))
 
-(subtest "star-gist"
+(deftest star-gist (api)
   (with-new-gist (gist)
-    (is (gist-starred-p gist)
-        nil
-        "At first, the gist is not starred.")
-
+    (assert-false (gist-starred-p gist)
+      "At first, the gist is not starred.")
     (star-gist gist)
-    (ok (gist-starred-p gist)
-        "can star the gist.")))
+    (assert-true (gist-starred-p gist)
+      "Can star the gist.")))
 
-(subtest "unstar-gist"
+(deftest unstar-gist (api)
   (with-new-gist (gist)
     (star-gist gist)
-
-    (ok (gist-starred-p gist)
-        "At first, the gist is starred.")
-
+    (assert-true (gist-starred-p gist)
+      "At first, the gist is starred.")
     (unstar-gist gist)
-    (is (gist-starred-p gist)
-        nil
-        "can unstar the gist.")))
+    (assert-false (gist-starred-p gist)
+      "Can unstar the gist.")))
 
-(subtest "gist-starred-p"
+(deftest gist-starred-p (api)
   (with-new-gist (gist)
-    (is (gist-starred-p gist)
-        nil
-        "NIL.")
-
+    (assert-false (gist-starred-p gist)
+      "Gist is not starred")
     (star-gist gist)
-    (ok (gist-starred-p gist)
-        "T.")))
+    (assert-true (gist-starred-p gist)
+      "Gist is starred")))
 
-(subtest "fork-gist"
+(deftest fork-gist (api)
   (let* ((gist (get-gist *anonymous-gist-id*))
          (forked (fork-gist gist)))
-    (is-type (get-gist (gist-id forked))
-             'gist
-             "can fork a gist.")
+    (assert-true (typep (get-gist (gist-id forked)) 'gist)
+      "can fork a gist.")
     (delete-gist forked)))
 
-(subtest "list-gist-forks"
+(deftest list-gist-forks (api)
   (let* ((gist (get-gist *anonymous-gist-id*))
          (forked (fork-gist gist)))
-
-    (is-type (car (list-gist-forks gist))
-             'gist
-             "can get list of fork gists.")
+    (assert-true (typep (car (list-gist-forks gist)) 'gist)
+      "can get list of fork gists.")
     (delete-gist forked)))
 
-(subtest "delete-gist"
+(deftest delete-gist (api)
   (let ((gist (create-gist (make-gist :description "sample" :public t :files (list (list :name "sample" :content "Sample."))))))
-    (ok (get-gist (gist-id gist))
-        "At first, you can get the gist.")
+    (assert-true (get-gist (gist-id gist))
+      (delete-gist gist)
+      (assert-condition error (get-gist (gist-id gist))
+	"Can delete the gist"))))
 
-    (delete-gist gist)
-    (is-error (get-gist (gist-id gist))
-              'error
-              "can delete the gist.")))
-
-(finalize)

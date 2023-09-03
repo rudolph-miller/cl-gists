@@ -1,17 +1,11 @@
-(in-package :cl-user)
-(defpackage cl-gists-test.history
-  (:use :cl
-        :prove
-        :cl-gists-test.init
-        :cl-gists)
-  (:import-from :cl-gists.util
-                :parse-json)
-  (:import-from :cl-gists.history
-                :make-history
-                :make-histories))
-(in-package :cl-gists-test.history)
+;;; -*- Mode: LISP; Base: 10; Syntax: ANSI-Common-Lisp; Package: CL-GISTS-TEST -*-
+;;; Copyright (c) 2015 Rudolph Miller (chopsticks.tk.ppfm@gmail.com)
+;;; Copyright (c) 2021-2023 by Symbolics Pte. Ltd. All rights reserved.
+;;; SPDX-License-identifier: MS-PL
 
-(plan nil)
+(in-package #:cl-gists-test)
+
+(defsuite history (gists))
 
 (defvar *histories-json-string*
   "[{
@@ -44,7 +38,7 @@
         \"committed_at\": \"2010-04-14T02:15:15Z\"
     }]")
 
-(subtest "history"
+(deftest make-history (history)
   (let ((history (make-history :url "https://api.github.com/gists/aa5a315d61ae9438b18d/57a7f021a713b1c5a6a199b54cc514735d2d462f"
                                :version "57a7f021a713b1c5a6a199b54cc514735d2d462f"
                                :user '(:login "octocat"
@@ -68,18 +62,14 @@
                                :additions 180
                                :total 180
                                :committed-at "2010-04-14T02:15:15Z")))
-    (is-type history
-             'history
-             "can make-history.")
 
+    (assert-true (typep history 'history)
+      "Can make-history.")
     (test-history history)))
 
-(subtest "make-histories"
+(deftest make-histories (history)
   (let ((history (car (make-histories (parse-json *histories-json-string*)))))
-    (is-type history
-             'history
-             "can make-histories.")
-
+    (assert-true (typep history 'history)
+      "Can make-histories.")
     (test-history history)))
 
-(finalize)
